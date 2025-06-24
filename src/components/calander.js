@@ -8,7 +8,6 @@ import DayView from './DayView';
 import WeekView from './WeekView';
 import YearView from './YearView';
 
-// Fix the forwardRef implementation
 const Calendar = forwardRef(function Calendar({ isDarkMode }, ref) {
   // State management
   const [currentDate, setCurrentDate] = useState(new Date());
@@ -43,14 +42,13 @@ const Calendar = forwardRef(function Calendar({ isDarkMode }, ref) {
   const [showEventsList, setShowEventsList] = useState(false);
   
   useEffect(() => {
-    // Load static event data and convert date strings to Date objects
-    const currentYear = 2025; // Update to current year
+    // Load event data and convert date strings to Date objects
+    const currentYear = 2025;
     
     const formattedEvents = [...eventData, ...currentEventsData].map(event => {
       const startDate = new Date(event.start);
       const endDate = new Date(event.end);
       
-      // Update all events to current year (2025)
       startDate.setFullYear(currentYear);
       endDate.setFullYear(currentYear);
       
@@ -71,7 +69,7 @@ const Calendar = forwardRef(function Calendar({ isDarkMode }, ref) {
       return index === self.findIndex(e => `${e.title}_${e.start.toDateString()}` === eventKey);
     });
     
-    // Sort events by start time for better display
+    // Sort events by start time
     uniqueEvents.sort((a, b) => a.start - b.start);
     
     setEvents(uniqueEvents);
@@ -83,7 +81,7 @@ const Calendar = forwardRef(function Calendar({ isDarkMode }, ref) {
     
     window.addEventListener('resize', handleResize);
     
-    // Enhanced weather data for Tamil Nadu climate
+    // Generate weather data for Tamil Nadu climate
     setTimeout(() => {
       const currentYear = 2025; // Update weather data year
       const mockWeather = {};
@@ -157,11 +155,9 @@ const Calendar = forwardRef(function Calendar({ isDarkMode }, ref) {
     }
   };
 
-  // Add the missing handleEventClick function
   const handleEventClick = (event) => {
     setCurrentEvent(event);
     
-    // Check if the event has a flag to show the modal
     if (event.showEventModal) {
       setShowEventModal(true);
     }
@@ -200,7 +196,6 @@ const Calendar = forwardRef(function Calendar({ isDarkMode }, ref) {
     }
   };
   
-  // Enhanced event handling with duplicate prevention
   const handleDateClick = (date) => {
     setSelectedDate(date);
     
@@ -299,16 +294,13 @@ const Calendar = forwardRef(function Calendar({ isDarkMode }, ref) {
     setDraggedEvent(null);
   };
 
-  // Function to check for event conflicts - fixed to avoid duplicates
   const checkEventConflicts = (events) => {
     if (events.length <= 1) return events;
     
-    // Use a Set to track unique event IDs to prevent duplicates
     const uniqueEvents = events.filter((event, index, self) => 
       index === self.findIndex(e => e.id === event.id)
     );
     
-    // Create a map to track conflicts without modifying original objects
     const conflictMap = new Map();
     
     for (let i = 0; i < uniqueEvents.length; i++) {
@@ -333,14 +325,12 @@ const Calendar = forwardRef(function Calendar({ isDarkMode }, ref) {
       conflictMap.set(event.id, hasConflict);
     }
     
-    // Return unique events with conflict flag
     return uniqueEvents.map(event => ({
       ...event,
       hasConflict: conflictMap.get(event.id) || false
     }));
   };
   
-  // Helper function to get visual representation for event duration
   const getEventTimeLabel = (event) => {
     const start = new Date(event.start);
     const end = new Date(event.end);
@@ -356,7 +346,7 @@ const Calendar = forwardRef(function Calendar({ isDarkMode }, ref) {
     return `${startTime} - ${endTime}`;
   };
   
-  // Render functions for different views
+  // View rendering functions
   const renderMonthView = () => {
     const displayDate = new Date(currentDate);
     const days = [];
@@ -637,7 +627,6 @@ const Calendar = forwardRef(function Calendar({ isDarkMode }, ref) {
     );
   };
 
-  // Render day view with unique events
   const renderDayView = () => {
     const dayEvents = events.filter((event, index, self) => 
       new Date(event.start).toDateString() === currentDate.toDateString() &&
@@ -659,7 +648,6 @@ const Calendar = forwardRef(function Calendar({ isDarkMode }, ref) {
     );
   };
 
-  // Render week view with unique events
   const renderWeekView = () => {
     const uniqueEvents = events.filter((event, index, self) => 
       index === self.findIndex(e => 
@@ -680,7 +668,6 @@ const Calendar = forwardRef(function Calendar({ isDarkMode }, ref) {
     );
   };
 
-  // Render year view with unique events
   const renderYearView = () => {
     const uniqueEvents = events.filter((event, index, self) => 
       index === self.findIndex(e => 
@@ -800,7 +787,7 @@ const Calendar = forwardRef(function Calendar({ isDarkMode }, ref) {
     </AnimatePresence>
   );
 
-  // Simple inline event modal
+  // Event modal
   const EventModal = () => (
     <AnimatePresence>
       {showEventModal && (
@@ -957,7 +944,6 @@ const Calendar = forwardRef(function Calendar({ isDarkMode }, ref) {
     </AnimatePresence>
   );
 
-  // Expose methods via ref
   useImperativeHandle(ref, () => ({
     goToToday,
     setViewMode,
@@ -1005,7 +991,7 @@ const Calendar = forwardRef(function Calendar({ isDarkMode }, ref) {
 
   return (
     <div className="h-full flex flex-col">
-      {/* Header - Mobile optimized */}
+      {/* Header */}
       <div className={`flex items-center justify-between p-2 sm:p-4 border-b ${
         isDarkMode ? 'border-gray-700 bg-gray-800' : 'border-gray-200 bg-white'
       }`}>
@@ -1113,7 +1099,7 @@ const Calendar = forwardRef(function Calendar({ isDarkMode }, ref) {
             </button>
           </div>
 
-          {/* Add event button - Mobile optimized */}
+        
           <button
             onClick={() => openNewEventModal(selectedDate)}
             className={`p-1.5 sm:p-2 rounded-lg transition-colors ${
@@ -1125,7 +1111,7 @@ const Calendar = forwardRef(function Calendar({ isDarkMode }, ref) {
         </div>
       </div>
 
-      {/* Calendar Content */}
+    
       <div className="flex-1 overflow-hidden">
         {viewMode === 'year' && renderYearView()}
         {viewMode === 'month' && renderMonthView()}
@@ -1133,7 +1119,6 @@ const Calendar = forwardRef(function Calendar({ isDarkMode }, ref) {
         {viewMode === 'day' && renderDayView()}
       </div>
 
-      {/* Modals */}
       <EventModal />
       <EventsListModal />
     </div>
@@ -1141,3 +1126,4 @@ const Calendar = forwardRef(function Calendar({ isDarkMode }, ref) {
 });
 
 export default Calendar;
+       

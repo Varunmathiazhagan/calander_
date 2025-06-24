@@ -10,7 +10,7 @@ const DayView = ({
   onTimeSlotClick, 
   weatherData = {} 
 }) => {
-  // Ensure date is valid
+  // Check date validity
   if (!date || !(date instanceof Date) || isNaN(date.getTime())) {
     return (
       <div className="flex items-center justify-center h-64">
@@ -137,7 +137,7 @@ const DayView = ({
 
   return (
     <div className="h-full flex flex-col">
-      {/* Day Header - Mobile optimized */}
+      {/* Day Header */}
       <div className={`p-3 sm:p-6 border-b ${isDarkMode ? 'border-gray-700' : 'border-gray-200'}`}>
         <div className="flex items-center justify-between">
           <div className="min-w-0 flex-1">
@@ -170,7 +170,7 @@ const DayView = ({
         </div>
       </div>
 
-      {/* Timeline - Mobile optimized */}
+      {/* Timeline */}
       <div className="flex-1 overflow-y-auto">
         <div className="relative">
           {/* Hour grid */}
@@ -358,7 +358,7 @@ const DayView = ({
         </div>
       </div>
 
-      {/* Current time floating indicator - Mobile optimized */}
+      {/* Current time floating indicator */}
       {date.toDateString() === new Date().toDateString() && (
         <motion.div
           className="fixed right-2 sm:right-8 top-1/2 transform -translate-y-1/2 z-50"
