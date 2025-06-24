@@ -1,0 +1,581 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Custom Styles */
+html {
+  scroll-behavior: smooth;
+  height: 100%;
+  overflow-x: hidden;
+  /* Prevent rubber band effect on Safari and some mobile browsers */
+  overscroll-behavior: none;
+}
+
+body {
+  @apply bg-gradient-to-b from-dark to-gray-900 text-light min-h-screen;
+  font-family: 'Inter', sans-serif;
+  overflow-x: hidden;
+  /* Improve scrolling smoothness */
+  overscroll-behavior-y: none;
+  position: relative;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  /* Prevent layout shifts during scrolling */
+  width: 100%;
+}
+
+/* Enhanced scroll experience */
+.smooth-scroll-container {
+  /* Removed transform properties that can cause glitchy behavior */
+  position: relative;
+  /* Force hardware acceleration without transforms */
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+/* Scroll progress indicator */
+.scroll-progress-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 3px;
+  z-index: 1000;
+  background-color: rgba(255, 255, 255, 0.05);
+  /* Force GPU acceleration to prevent jank */
+  transform: translateZ(0);
+  will-change: opacity;
+}
+
+.scroll-progress-bar {
+  height: 100%;
+  background: linear-gradient(90deg, theme('colors.primary.500'), theme('colors.secondary.500'));
+  width: 0%;
+  /* Make the transition smoother */
+  transition: width 0.08s linear;
+  /* Force GPU acceleration */
+  transform: translateZ(0);
+  will-change: width;
+}
+
+/* Improved animations for scroll reveals */
+.reveal-on-scroll {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.7s ease-out, transform 0.7s ease-out;
+  will-change: opacity, transform;
+}
+
+.reveal-on-scroll.active {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Smoother anchor link behavior */
+[data-anchor-link] {
+  scroll-margin-top: 100px;
+}
+
+/* Fix position: fixed elements causing jank */
+.fixed {
+  /* Force GPU acceleration */
+  transform: translateZ(0);
+  will-change: transform;
+}
+
+/* Section classes to prevent layout shifts */
+section {
+  position: relative;
+  /* Prevent content jumps */
+  contain: content;
+  /* Optional: Add paint containment for better performance */
+  contain: paint;
+}
+
+/* Disable scroll snap which can cause jumpy scrolling */
+@media (min-width: 1024px) {
+  .scroll-snap-container {
+    height: 100vh;
+    overflow-y: auto;
+    /* Disabled scroll snap since it causes jumpiness */
+    /* scroll-snap-type: y mandatory; */
+    scroll-behavior: smooth;
+  }
+
+  .scroll-snap-section {
+    /* scroll-snap-align: start; */
+    /* scroll-snap-stop: always; */
+  }
+}
+
+/* Enhanced smooth scrolling container */
+.smooth-scroll-container {
+  will-change: transform;
+  transition: transform 0.1s cubic-bezier(0.23, 1, 0.32, 1);
+  position: relative;
+}
+
+/* Scroll progress indicator */
+.scroll-progress-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 3px;
+  z-index: 1000;
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+.scroll-progress-bar {
+  height: 100%;
+  background: linear-gradient(90deg, theme('colors.primary.500'), theme('colors.secondary.500'));
+  width: 0%;
+  transition: width 0.05s ease-out;
+}
+
+/* Improved animations for scroll reveals */
+.reveal-on-scroll {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.8s cubic-bezier(0.5, 0, 0, 1), 
+              transform 0.8s cubic-bezier(0.5, 0, 0, 1);
+}
+
+.reveal-on-scroll.active {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Smoother anchor link behavior */
+[data-anchor-link] {
+  scroll-margin-top: 100px;
+}
+
+/* Loading state */
+.loading {
+  cursor: wait;
+}
+
+/* Enhanced scrollbar for better user experience */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-dark;
+  background-color: rgba(0, 0, 0, 0.1);
+}
+
+::-webkit-scrollbar-thumb {
+  @apply rounded-full;
+  background-image: linear-gradient(to bottom, theme('colors.primary.500'), theme('colors.secondary.600'));
+  border: 2px solid transparent;
+  background-clip: content-box;
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-image: linear-gradient(to bottom, theme('colors.primary.400'), theme('colors.secondary.500'));
+}
+
+::-webkit-scrollbar-corner {
+  background-color: transparent;
+}
+
+/* Scroll snap for major sections */
+@media (min-width: 1024px) {
+  .scroll-snap-container {
+    height: 100vh;
+    overflow-y: scroll;
+    scroll-snap-type: y mandatory;
+    scroll-behavior: smooth;
+  }
+
+  .scroll-snap-section {
+    scroll-snap-align: start;
+    scroll-snap-stop: always;
+  }
+}
+
+/* Improved transition speeds for smoother experience */
+.section-transition {
+  transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1), 
+              opacity 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* Glass effect - enhanced with better blur */
+.glass {
+  @apply bg-white bg-opacity-10 backdrop-filter backdrop-blur-lg;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+}
+
+/* Enhanced 3D Card Effect */
+.card-3d {
+  transform-style: preserve-3d;
+  transition: all 0.6s cubic-bezier(0.175, 0.885, 0.32, 1);
+  perspective: 1000px;
+}
+
+.card-3d:hover {
+  transform: translateZ(30px) rotateX(5deg) rotateY(5deg);
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
+}
+
+.card-3d::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: linear-gradient(45deg, var(--tw-gradient-from), var(--tw-gradient-to));
+  border-radius: inherit;
+  opacity: 0;
+  transition: opacity 0.6s;
+}
+
+.card-3d:hover::before {
+  opacity: 0.1;
+}
+
+/* Advanced Parallax effect */
+.parallax {
+  transition: transform 0.35s cubic-bezier(0.33, 1, 0.68, 1);
+  transform-style: preserve-3d;
+}
+
+/* Spotlight effect */
+.spotlight {
+  position: relative;
+  overflow: hidden;
+}
+
+.spotlight:before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(
+    circle at center,
+    rgba(255, 255, 255, 0.1) 0%,
+    rgba(255, 255, 255, 0) 80%
+  );
+  opacity: 0;
+  transform: translate(100%, 100%);
+  transition: opacity 0.5s;
+  pointer-events: none;
+}
+
+.spotlight:hover:before {
+  opacity: 1;
+}
+
+/* Magnetic effect for buttons */
+.magnetic-btn {
+  transform-style: preserve-3d;
+  transform: perspective(800px);
+  transition: transform 0.05s;
+}
+
+/* Custom scrollbar - enhanced */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-dark;
+  background-color: rgba(0, 0, 0, 0.1);
+}
+
+::-webkit-scrollbar-thumb {
+  @apply rounded-full;
+  background-image: linear-gradient(to bottom, theme('colors.primary.500'), theme('colors.secondary.600'));
+  border: 2px solid transparent;
+  background-clip: content-box;
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-image: linear-gradient(to bottom, theme('colors.primary.400'), theme('colors.secondary.500'));
+}
+
+::-webkit-scrollbar-corner {
+  background-color: transparent;
+}
+
+/* Animated background gradient - enhanced */
+.animated-gradient {
+  background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+  background-size: 400% 400%;
+  animation: gradient 15s ease infinite;
+  background-attachment: fixed;
+}
+
+@keyframes gradient {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* Text gradient effect - enhanced */
+.text-gradient {
+  background: linear-gradient(
+    135deg,
+    theme('colors.primary.400') 0%,
+    theme('colors.secondary.500') 50%,
+    theme('colors.primary.400') 100%
+  );
+  background-size: 200% auto;
+  animation: gradientFlow 8s linear infinite;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+@keyframes gradientFlow {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* Enhanced typing animation */
+.typing-effect {
+  overflow: hidden;
+  border-right: 0.15em solid theme('colors.primary.500');
+  white-space: nowrap;
+  width: 0;
+  animation: typing 3.5s steps(40, end) forwards, blink-caret 0.75s step-end infinite;
+  display: inline-block;
+}
+
+@keyframes typing {
+  from { width: 0 }
+  to { width: 100% }
+}
+
+@keyframes blink-caret {
+  from, to { border-color: transparent }
+  50% { border-color: theme('colors.primary.500') }
+}
+
+/* Floating animation */
+.floating {
+  animation: floating 3s ease-in-out infinite;
+}
+
+@keyframes floating {
+  0% { transform: translateY(0px); }
+  50% { transform: translateY(-15px); }
+  100% { transform: translateY(0px); }
+}
+
+/* Shimmer effect for cards */
+.shimmer {
+  position: relative;
+  overflow: hidden;
+}
+
+.shimmer::after {
+  content: '';
+  position: absolute;
+  top: -100%;
+  left: -100%;
+  width: 300%;
+  height: 300%;
+  background: linear-gradient(
+    115deg,
+    transparent 20%,
+    rgba(255, 255, 255, 0.1) 40%,
+    transparent 60%
+  );
+  transform: rotate(45deg);
+  animation: shimmer 6s linear infinite;
+  pointer-events: none;
+}
+
+@keyframes shimmer {
+  0% { transform: translateX(-100%) rotate(45deg); }
+  100% { transform: translateX(100%) rotate(45deg); }
+}
+
+/* Image hover zoom effect */
+.img-zoom-container {
+  overflow: hidden;
+}
+
+.img-zoom {
+  transition: transform 0.8s cubic-bezier(0.165, 0.84, 0.44, 1);
+}
+
+.img-zoom-container:hover .img-zoom {
+  transform: scale(1.05);
+}
+
+/* Glow effect */
+.glow-on-hover {
+  position: relative;
+  z-index: 1;
+}
+
+.glow-on-hover::after {
+  content: "";
+  position: absolute;
+  inset: -5px;
+  z-index: -1;
+  background: linear-gradient(45deg, theme('colors.primary.500'), theme('colors.secondary.500'));
+  opacity: 0;
+  border-radius: inherit;
+  transition: opacity 0.3s ease-in-out;
+  filter: blur(15px);
+}
+
+.glow-on-hover:hover::after {
+  opacity: 0.8;
+}
+
+/* Common components - enhanced */
+@layer components {
+  .btn-primary {
+    @apply px-6 py-3 bg-primary-600 text-white rounded-lg hover:bg-primary-700 
+    transition-all duration-300 transform hover:-translate-y-1 focus:outline-none focus:ring-2 
+    focus:ring-primary-500 focus:ring-opacity-50 shadow-lg relative overflow-hidden;
+  }
+  
+  .btn-primary::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+    transition: 0.5s;
+  }
+  
+  .btn-primary:hover::before {
+    left: 100%;
+  }
+  
+  .section-heading {
+    @apply text-3xl md:text-5xl font-bold mb-8 text-gradient;
+  }
+  
+  .card {
+    @apply bg-gray-800 bg-opacity-50 rounded-xl p-6 backdrop-filter backdrop-blur-md 
+    border border-gray-700 hover:border-primary-500 transition-all duration-300 shadow-xl;
+  }
+}
+
+/* Advanced Theme Support */
+[data-theme="dark"] {
+  --background: theme('colors.dark');
+  --text: theme('colors.light');
+}
+
+[data-theme="light"] {
+  --background: theme('colors.light');
+  --text: theme('colors.dark');
+}
+
+/* Page Transitions */
+.page-transition-enter {
+  opacity: 0;
+  transform: translateY(20px);
+}
+
+.page-transition-enter-active {
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 400ms, transform 400ms;
+}
+
+.page-transition-exit {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.page-transition-exit-active {
+  opacity: 0;
+  transform: translateY(-20px);
+  transition: opacity 400ms, transform 400ms;
+}
+
+/* 3D text effect */
+.text-3d {
+  text-shadow: 0px 1px 0px rgba(255,255,255,.2),
+               0px 2px 0px rgba(255,255,255,.1),
+               0px 3px 10px rgba(0,0,0,.8);
+}
+
+/* Loading animation */
+.loading-circle {
+  display: inline-block;
+  width: 80px;
+  height: 80px;
+}
+.loading-circle:after {
+  content: " ";
+  display: block;
+  width: 64px;
+  height: 64px;
+  margin: 8px;
+  border-radius: 50%;
+  border: 6px solid theme('colors.primary.500');
+  border-color: theme('colors.primary.500') transparent theme('colors.secondary.500') transparent;
+  animation: loading 1.2s linear infinite;
+}
+@keyframes loading {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Enhanced hover effects */
+.hover-lift {
+  transition: transform 0.3s cubic-bezier(0.34, 0.96, 0.64, 1);
+}
+
+.hover-lift:hover {
+  transform: translateY(-8px);
+}
+
+/* Rest of App.css original styles */
+.App {
+  text-align: center;
+}
+
+.App-logo {
+  height: 40vmin;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .App-logo {
+    animation: App-logo-spin infinite 20s linear;
+  }
+}
+
+.App-header {
+  background-color: #282c34;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
+}
+
+.App-link {
+  color: #61dafb;
+}
+
+@keyframes App-logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}

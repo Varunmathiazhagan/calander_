@@ -1,0 +1,186 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+
+/* Add to your existing CSS */
+.event-day {
+  position: relative;
+}
+
+.event-day::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 0;
+  height: 0;
+  border-style: solid;
+  border-width: 0 8px 8px 0;
+  border-color: transparent #3b82f6 transparent transparent;
+  z-index: 1;
+}
+
+/* Improved event card styling */
+.event-card {
+  transition: all 0.2s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.event-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 3px;
+  height: 100%;
+  background-color: currentColor;
+}
+
+.event-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Upcoming events hover effect */
+.upcoming-event {
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.upcoming-event:hover {
+  transform: translateY(-1px) scale(1.02);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+/* Simple professional styling for leave days */
+.leave-day-professional {
+  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+  border: 1px solid #b91c1c;
+}
+
+.leave-day-professional:hover {
+  background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+}
+
+/* Clean border styles */
+.border-3 {
+  border-width: 3px;
+}
+
+/* Professional leave indicator */
+.leave-indicator {
+  background: #ef4444;
+  color: white;
+  font-weight: 600;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Clean professional scrollbar */
+.professional-scroll::-webkit-scrollbar {
+  width: 6px;
+}
+
+.professional-scroll::-webkit-scrollbar-track {
+  background: #f3f4f6;
+  border-radius: 3px;
+}
+
+.professional-scroll::-webkit-scrollbar-thumb {
+  background: #d1d5db;
+  border-radius: 3px;
+}
+
+.professional-scroll::-webkit-scrollbar-thumb:hover {
+  background: #9ca3af;
+}
+
+.animate-bounce-gentle {
+  animation: bounce-gentle 2s ease-in-out infinite;
+}
+
+@keyframes bounce-gentle {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+.animate-pulse-glow {
+  animation: pulse-glow 2s ease-in-out infinite;
+}
+
+@keyframes pulse-glow {
+  0%, 100% { box-shadow: 0 0 20px rgba(239, 68, 68, 0.5); }
+  50% { box-shadow: 0 0 40px rgba(239, 68, 68, 0.8); }
+}
+
+/* Stripe pattern for leave days */
+.bg-stripe-pattern {
+  background-image: repeating-linear-gradient(
+    45deg,
+    transparent,
+    transparent 10px,
+    rgba(255, 255, 255, 0.1) 10px,
+    rgba(255, 255, 255, 0.1) 20px
+  );
+}
+
+/* Special border styles for leave days */
+.border-4 {
+  border-width: 4px;
+}
+
+/* Leave day special effects */
+.leave-day-glow {
+  box-shadow: 
+    0 0 20px rgba(239, 68, 68, 0.3),
+    0 0 40px rgba(251, 146, 60, 0.2),
+    0 0 60px rgba(245, 158, 11, 0.1);
+}
+
+.leave-day-text-glow {
+  text-shadow: 
+    0 0 10px rgba(255, 255, 255, 0.8),
+    0 0 20px rgba(255, 255, 255, 0.6),
+    0 0 30px rgba(255, 255, 255, 0.4);
+}
+
+/* Custom scrollbar for leave events */
+.leave-events-scroll::-webkit-scrollbar {
+  width: 8px;
+}
+
+.leave-events-scroll::-webkit-scrollbar-track {
+  background: linear-gradient(to bottom, #f87171, #fb923c, #fbbf24);
+  border-radius: 4px;
+}
+
+.leave-events-scroll::-webkit-scrollbar-thumb {
+  background: linear-gradient(to bottom, #dc2626, #ea580c, #d97706);
+  border-radius: 4px;
+}
+
+.leave-events-scroll::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(to bottom, #b91c1c, #c2410c, #b45309);
+}
