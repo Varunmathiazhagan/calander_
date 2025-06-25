@@ -194,7 +194,7 @@ const DayView = ({
               className={`relative h-20 border-b ${
                 isDarkMode ? 'border-gray-700' : 'border-gray-200'
               } last:border-b-0 transition-colors cursor-pointer ${
-                date.toDateString() === new Date().toDateString() && new Date().getHours() === hour
+                date.toDateString() === today.toDateString() && today.getHours() === hour
                   ? isDarkMode ? 'bg-blue-900 bg-opacity-10' : 'bg-blue-50'
                   : ''
               } hover:bg-gray-50 dark:hover:bg-gray-800`}
@@ -213,18 +213,18 @@ const DayView = ({
               
               {/* Enhanced current time indicator with better animation */}
               {date.toDateString() === today.toDateString() && 
-               new Date().getHours() === hour && (
+               today.getHours() === hour && (
                 <div 
                   className="absolute left-16 md:left-20 right-0 bg-red-500 h-0.5 z-30 shadow-lg"
                   style={{ 
-                    top: `${(new Date().getMinutes() / 60) * 100}%`
+                    top: `${(today.getMinutes() / 60) * 100}%`
                   }}
                 >
                   <div className="absolute -left-2 -top-1.5 w-4 h-4 bg-red-500 rounded-full shadow-md flex items-center justify-center animate-pulse">
                     <div className="w-2 h-2 bg-white rounded-full"></div>
                   </div>
-                  <div className="absolute -right-1 -top-6 bg-red-500 text-white text-xs px-2 py-1 rounded-md shadow-lg font-medium">
-                    {new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                  <div className="absolute right-2 -top-6 bg-red-500 text-white text-xs px-2 py-1 rounded-md shadow-lg font-medium">
+                    {today.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                   </div>
                 </div>
               )}
@@ -418,10 +418,10 @@ const DayView = ({
             <div className="text-center">
               <div className="text-xs font-medium opacity-75 mb-1">Current Time</div>
               <div className="text-xl md:text-2xl font-bold text-red-500 mb-1">
-                {new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                {today.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
               </div>
               <div className="text-xs opacity-75">
-                {new Date().toLocaleDateString('en-US', { weekday: 'short' })}
+                {today.toLocaleDateString('en-US', { weekday: 'short' })}
               </div>
               <div className="mt-2 w-8 h-1 bg-red-500 rounded-full mx-auto animate-pulse"></div>
             </div>

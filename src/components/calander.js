@@ -181,7 +181,7 @@ const Calendar = forwardRef(function Calendar({ isDarkMode }, ref) {
   };
   
   const goToToday = () => {
-    const today = new Date(2025, 5, 24); // Set to June 24, 2025
+    const today = new Date(2025, 5, 24, 10, 30); // Set to June 24, 2025
     setCurrentDate(today);
     setSelectedDate(today);
   };
@@ -661,7 +661,7 @@ const Calendar = forwardRef(function Calendar({ isDarkMode }, ref) {
         onEventClick={handleEventClick}
         onTimeSlotClick={openNewEventModal}
         weatherData={weatherData}
-        today={new Date(2025, 5, 24)}
+        today={new Date(2025, 5, 24, 10, 30)}
       />
     );
   };

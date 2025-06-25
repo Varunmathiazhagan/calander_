@@ -387,7 +387,7 @@ function App() {
       <div className="flex flex-1 overflow-hidden">
         {/* Enhanced sidebar - Mobile optimized */}
         {sidebarOpen && (
-          <div className={`${sidebarOpen ? 'fixed md:relative z-30 md:z-auto' : 'hidden'} w-full sm:w-72 md:w-64 border-r p-3 sm:p-4 ${isDarkMode ? 'border-gray-700 bg-gradient-to-b from-gray-800 to-gray-900' : 'border-gray-200 bg-gradient-to-b from-white to-gray-50'} overflow-y-auto h-full`}>
+          <div className={`${sidebarOpen ? 'fixed md:relative z-30 md:z-auto' : 'hidden'} w-4/5 sm:w-72 md:w-64 border-r p-3 sm:p-4 ${isDarkMode ? 'border-gray-700 bg-gradient-to-b from-gray-800 to-gray-900' : 'border-gray-200 bg-gradient-to-b from-white to-gray-50'} overflow-y-auto h-full`}>
             {/* Close button for mobile view */}
             <button 
               className="md:hidden absolute top-2 right-2 p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 z-40"
@@ -488,7 +488,7 @@ function App() {
               <div className={`p-3 sm:p-4 rounded-lg mb-2 ${isDarkMode ? 'bg-gray-700' : 'bg-gray-50'} shadow-sm`}>
                 <div className="flex items-center justify-between mb-2">
                   <button 
-                    className={`p-1 rounded-full ${isDarkMode ? 'hover:bg-gray-600' : 'hover:bg-gray-200'} transition-colors`}
+                    className={`p-2 rounded-full ${isDarkMode ? 'hover:bg-gray-600' : 'hover:bg-gray-200'} transition-colors`}
                     onClick={prevMonth}
                   >
                     <FaChevronLeft className="text-xs" />
@@ -497,7 +497,7 @@ function App() {
                     {miniCalendarDate.toLocaleString('default', { month: 'long' })} {miniCalendarDate.getFullYear()}
                   </span>
                   <button 
-                    className={`p-1 rounded-full ${isDarkMode ? 'hover:bg-gray-600' : 'hover:bg-gray-200'} transition-colors`}
+                    className={`p-2 rounded-full ${isDarkMode ? 'hover:bg-gray-600' : 'hover:bg-gray-200'} transition-colors`}
                     onClick={nextMonth}
                   >
                     <FaChevronRight className="text-xs" />
@@ -525,7 +525,7 @@ function App() {
                       days.push(
                         <div 
                           key={`prev-${i}`}
-                          className="w-7 h-7 sm:w-6 sm:h-6 flex items-center justify-center rounded-full text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-600 cursor-pointer transition-colors"
+                          className="aspect-square flex items-center justify-center rounded-full text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-600 cursor-pointer transition-colors"
                           onClick={() => jumpToDate(day)}
                         >
                           {day.getDate()}
@@ -542,7 +542,7 @@ function App() {
                       days.push(
                         <div 
                           key={`curr-${i}`}
-                          className={`w-7 h-7 sm:w-6 sm:h-6 flex items-center justify-center rounded-full transition-colors cursor-pointer relative
+                          className={`aspect-square flex items-center justify-center rounded-full transition-colors cursor-pointer relative
                             ${isToday ? isDarkMode ? 'bg-blue-600 text-white' : 'bg-blue-500 text-white' : 'hover:bg-gray-200 dark:hover:bg-gray-600'}`}
                           onClick={() => jumpToDate(day)}
                         >
@@ -649,7 +649,7 @@ function App() {
                   { name: 'Meetings', color: 'purple' }
                 ].map(({ name, color }) => (
                   <div key={name} className="flex items-center group">
-                    <input type="checkbox" className={`rounded text-${color}-500 mr-2 w-4 h-4`} checked readOnly />
+                    <input type="checkbox" className={`rounded text-${color}-500 mr-2 w-5 h-5`} checked readOnly />
                     <span className="text-sm flex-1">{name}</span>
                     <div className="ml-auto opacity-0 group-hover:opacity-100 transition-opacity">
                       <button className="text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 p-1">
@@ -669,11 +669,11 @@ function App() {
               </h3>
               <div className="space-y-2">
                 <div className="flex items-center">
-                  <input type="checkbox" className="rounded text-red-500 mr-2 w-4 h-4" checked readOnly />
+                  <input type="checkbox" className="rounded text-red-500 mr-2 w-5 h-5" checked readOnly />
                   <span className="text-sm">Holidays</span>
                 </div>
                 <div className="flex items-center">
-                  <input type="checkbox" className="rounded text-teal-500 mr-2 w-4 h-4" checked readOnly />
+                  <input type="checkbox" className="rounded text-teal-500 mr-2 w-5 h-5" checked readOnly />
                   <span className="text-sm">Team Events</span>
                 </div>
               </div>
