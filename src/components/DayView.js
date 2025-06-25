@@ -395,7 +395,7 @@ const DayView = ({
       {/* Enhanced current time floating indicator with animations */}
       {date.toDateString() === today.toDateString() && (
         <motion.div
-          className="absolute right-2 md:right-8 top-1/2 transform -translate-y-1/2 z-50"
+          className="absolute right-2 md:right-8 top-1/2 transform -translate-y-1/2 z-50 hidden md:block"
           initial={{ opacity: 0, x: 50 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ delay: 0.5, type: "spring", damping: 20 }}
