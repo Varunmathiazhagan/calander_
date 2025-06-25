@@ -37,7 +37,7 @@ const Calendar = forwardRef(function Calendar({ isDarkMode }, ref) {
   const [draggedEvent, setDraggedEvent] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [weatherData, setWeatherData] = useState({});
-  const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+  const [isMobile, setIsMobile] = useState(false);
   const [selectedDateEvents, setSelectedDateEvents] = useState([]);
   const [showEventsList, setShowEventsList] = useState(false);
   
@@ -79,6 +79,7 @@ const Calendar = forwardRef(function Calendar({ isDarkMode }, ref) {
       setIsMobile(window.innerWidth < 768);
     };
     
+    handleResize();
     window.addEventListener('resize', handleResize);
     
     // Generate weather data for Tamil Nadu climate
@@ -394,9 +395,10 @@ const Calendar = forwardRef(function Calendar({ isDarkMode }, ref) {
           {['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'].map(day => (
             <div 
               key={day} 
-              className={`py-3 text-center text-xs font-semibold ${isDarkMode ? 'text-gray-300' : 'text-gray-700'} ${isMobile ? 'px-1' : 'px-2'} tracking-wider`}
+              className={`py-2 md:py-3 text-center text-xs font-semibold ${isDarkMode ? 'text-gray-300' : 'text-gray-700'} px-1 md:px-2 tracking-wider`}
             >
-              {isMobile ? day.charAt(0) : day}
+              <span className="hidden md:inline">{day}</span>
+              <span className="md:hidden">{day.charAt(0)}</span>
             </div>
           ))}
         </div>
@@ -430,13 +432,13 @@ const Calendar = forwardRef(function Calendar({ isDarkMode }, ref) {
                 
                 // Enhanced leave day styling
                 const leaveGradient = isDarkMode 
-                  ? 'bg-gradient-to-br from-red-900 to-red-800 dark:from-red-800 dark:to-red-900'
+                  ? 'bg-gradient-to-br from-red-900/50 to-red-800/50'
                   : 'bg-gradient-to-br from-red-50 to-red-100';
                 
                 return (
                   <div 
                     key={dayIndex} 
-                    className={`relative p-2 transition-all duration-200 cursor-pointer group overflow-hidden ${
+                    className={`relative p-1 md:p-2 transition-all duration-200 cursor-pointer group overflow-hidden ${
                       isCurrentMonth 
                         ? isDarkMode ? 'bg-gray-800 hover:bg-gray-750' : 'bg-white hover:bg-gray-50' 
                         : isDarkMode ? 'bg-gray-900 text-gray-600' : 'bg-gray-50 text-gray-400'
@@ -454,15 +456,15 @@ const Calendar = forwardRef(function Calendar({ isDarkMode }, ref) {
                       <div className="absolute -right-6 -top-6 w-12 h-12 rotate-45 bg-red-500 shadow-md"></div>
                     )}
                     
-                    <div className="flex items-center justify-between h-8 relative z-10">
-                      <div className={`flex items-center justify-center transition-all ${
+                    <div className="flex items-center justify-between h-6 md:h-8 relative z-10">
+                      <div className={`flex items-center justify-center transition-all text-xs md:text-sm ${
                         isToday 
-                          ? 'h-8 w-8 rounded-full bg-gradient-to-r from-blue-500 to-purple-600 text-white font-bold shadow-md' 
+                          ? 'h-6 w-6 md:h-8 md:w-8 rounded-full bg-gradient-to-r from-blue-500 to-purple-600 text-white font-bold shadow-md' 
                           : isLeaveDay
-                          ? 'h-8 w-8 rounded-full bg-red-500 text-white font-bold shadow-sm'
-                          : 'hover:bg-gray-200 dark:hover:bg-gray-600 rounded-full h-7 w-7'
+                          ? 'h-6 w-6 md:h-8 md:w-8 rounded-full bg-red-500 text-white font-bold shadow-sm'
+                          : 'hover:bg-gray-200 dark:hover:bg-gray-600 rounded-full h-6 w-6 md:h-7 w-7'
                       }`}>
-                        <span className={`text-sm font-medium ${
+                        <span className={`font-medium ${
                           isWeekend && isCurrentMonth && !isToday && !isLeaveDay
                             ? isDarkMode ? 'text-red-300' : 'text-red-500' 
                             : isLeaveDay ? 'text-white' : ''
@@ -472,31 +474,31 @@ const Calendar = forwardRef(function Calendar({ isDarkMode }, ref) {
                       </div>
                       
                       {/* Weather display with enhanced styling */}
-                      {dayWeather && isCurrentMonth && !isMobile && (
-                        <span className="text-xs opacity-75 group-hover:opacity-100 transition-opacity bg-opacity-50 px-1 py-0.5 rounded backdrop-blur-sm">
-                          {getWeatherIcon(dayWeather.condition)} {dayWeather.temp}°
+                      {dayWeather && isCurrentMonth && (
+                        <span className="text-[10px] md:text-xs opacity-75 group-hover:opacity-100 transition-opacity bg-opacity-50 px-1 py-0.5 rounded backdrop-blur-sm">
+                          {getWeatherIcon(dayWeather.condition)} <span className="hidden sm:inline">{dayWeather.temp}°</span>
                         </span>
                       )}
                     </div>
                     
-                    <div className="mt-1 space-y-1 max-h-[calc(100%-2.5rem)] overflow-hidden relative z-10">
+                    <div className="mt-1 space-y-1 max-h-[calc(100%-2rem)] md:max-h-[calc(100%-2.5rem)] overflow-hidden relative z-10">
                       {/* Enhanced event styling */}
-                      {processedEvents.slice(0, 1).map(event => (
+                      {processedEvents.slice(0, isMobile ? 1 : 1).map(event => (
                         <div
                           key={event.id}
-                          className={`text-xs rounded-md px-2 py-1.5 cursor-pointer transition-all duration-200 hover:shadow-lg ${
+                          className={`text-xs rounded-md px-1 md:px-2 py-0.5 md:py-1.5 cursor-pointer transition-all duration-200 hover:shadow-lg ${
                             event.isWorkingDayLeave || event.category === 'holiday' 
                               ? `
-                                bg-gradient-to-r from-red-500 to-red-600 text-white font-semibold
-                                border border-red-600 shadow-sm
-                                hover:from-red-600 hover:to-red-700
+                                bg-gradient-to-r from-red-400 to-red-500 text-white font-bold
+                                border border-red-500 shadow-sm bg-stripe-pattern
+                                hover:from-red-500 hover:to-red-600
                               `
                               : `
-                                border-l-4 hover:shadow-lg hover:translate-x-0.5 hover:-translate-y-0.5
+                                border-l-2 md:border-l-4 hover:shadow-lg hover:translate-x-0.5 hover:-translate-y-0.5
                                 ${event.hasConflict ? 'ring-1 ring-orange-400 border-r-2 border-r-orange-400' : ''}
                               `
                           }`}
-                          style={event.isWorkingDayLeave || event.category === 'holiday' ? {} : { 
+                          style={event.isWorkingDayLeave || event.category === 'holiday' ? { textShadow: '0 1px 4px rgba(0,0,0,0.7)' } : { 
                             backgroundColor: isDarkMode ? `${event.color}90` : `${event.color}25`,
                             color: isDarkMode ? 'white' : event.color,
                             borderLeftColor: event.color
@@ -526,17 +528,18 @@ const Calendar = forwardRef(function Calendar({ isDarkMode }, ref) {
                             )}
                             
                             {/* Enhanced title styling */}
-                            <span className={`leading-tight break-words flex-1 ${
+                            <span className={`leading-tight break-words flex-1 text-[10px] md:text-xs ${
                               event.isWorkingDayLeave || event.category === 'holiday'
-                                ? 'font-semibold text-xs'
-                                : 'font-semibold text-xs'
+                                ? 'font-bold'
+                                : 'font-semibold'
                             }`}>
-                              {event.title}
+                              <span className="hidden sm:inline">{event.title}</span>
+                              <span className="sm:hidden">{event.title.substring(0, 3)}...</span>
                             </span>
                           </div>
                           
                           {/* Enhanced time display */}
-                          {!isMobile && !event.isWorkingDayLeave && event.category !== 'holiday' && (
+                          {!event.isWorkingDayLeave && event.category !== 'holiday' && !isMobile && (
                             <div className="text-[10px] opacity-75 mt-1 flex items-center">
                               <svg className="w-2 h-2 mr-1" fill="currentColor" viewBox="0 0 20 20">
                                 <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clipRule="evenodd" />
@@ -547,26 +550,39 @@ const Calendar = forwardRef(function Calendar({ isDarkMode }, ref) {
                           
                           {/* Enhanced leave day badge */}
                           {(event.isWorkingDayLeave || event.category === 'holiday') && (
-                            <div className="flex items-center justify-center mt-1">
-                              <span className="text-[10px] bg-white bg-opacity-30 text-white px-2 py-0.5 rounded-sm font-medium backdrop-blur-sm">
+                            <div className="hidden md:flex items-center justify-center mt-1">
+                              <span className="text-[9px] md:text-[10px] bg-white bg-opacity-30 text-gray-900 px-1 md:px-2 py-0.5 rounded-sm font-bold backdrop-blur-sm">
                                 {event.leaveType?.toUpperCase() || 'HOLIDAY'}
                               </span>
                             </div>
                           )}
                           
                           {/* Enhanced event indicators with better styling */}
-                          {!event.isWorkingDayLeave && event.category !== 'holiday' && (
-                            <div className="flex items-center gap-1 mt-1">
-                              {event.isRecurring && (
-                                <span className="text-[8px] bg-purple-100 dark:bg-purple-900 text-purple-700 dark:text-purple-300 px-1 rounded-full">
-                                  ↻
-                                </span>
-                              )}
-                              {event.hasConflict && (
-                                <span className="text-[8px] bg-orange-100 dark:bg-orange-900 text-orange-700 dark:text-orange-300 px-1 rounded-full animate-pulse">
-                                  !
-                                </span>
-                              )}
+                          {!event.isWorkingDayLeave && event.category !== 'holiday' && !isMobile && (
+                            <div className="flex items-center justify-between mt-1">
+                              <div className="flex items-center gap-1">
+                                {event.isRecurring && (
+                                  <span className="text-[8px] bg-purple-100 dark:bg-purple-900 text-purple-700 dark:text-purple-300 px-1 rounded-full">
+                                    ↻
+                                  </span>
+                                )}
+                                {event.hasConflict && (
+                                  <span className="text-[8px] bg-orange-100 dark:bg-orange-900 text-orange-700 dark:text-orange-300 px-1 rounded-full animate-pulse">
+                                    !
+                                  </span>
+                                )}
+                              </div>
+                              <div className="flex items-center gap-0.5">
+                                {event.priority === 'high' && (
+                                  <div className="w-1.5 h-1.5 bg-red-500 rounded-full" title="High Priority"></div>
+                                )}
+                                {event.priority === 'medium' && (
+                                  <div className="w-1.5 h-1.5 bg-yellow-500 rounded-full" title="Medium Priority"></div>
+                                )}
+                                {event.priority === 'low' && (
+                                  <div className="w-1.5 h-1.5 bg-green-500 rounded-full" title="Low Priority"></div>
+                                )}
+                              </div>
                             </div>
                           )}
                         </div>
@@ -575,7 +591,7 @@ const Calendar = forwardRef(function Calendar({ isDarkMode }, ref) {
                       {/* Enhanced "more events" indicator */}
                       {dayEvents.length > 1 && (
                         <motion.div 
-                          className={`text-xs cursor-pointer flex items-center justify-between rounded-md px-2 py-1 transition-all ${
+                          className={`text-[10px] md:text-xs cursor-pointer flex items-center justify-center md:justify-between rounded-md px-1 md:px-2 py-0.5 transition-all ${
                             isDarkMode ? 'text-blue-400 bg-blue-500 bg-opacity-20 hover:bg-opacity-30' : 'text-blue-600 bg-blue-100 hover:bg-blue-200'
                           }`}
                           onClick={(e) => {
@@ -588,8 +604,9 @@ const Calendar = forwardRef(function Calendar({ isDarkMode }, ref) {
                           initial={{ opacity: 0 }}
                           animate={{ opacity: 1 }}
                         >
-                          <span className="font-medium">+{dayEvents.length - 1} more</span>
-                          <span className={`text-[10px] h-4 w-4 inline-flex items-center justify-center rounded-full ${
+                          <span className="font-medium hidden md:inline">+{dayEvents.length - 1} more</span>
+                          <span className="font-bold md:hidden">+{dayEvents.length - 1}</span>
+                          <span className={`hidden md:inline-flex text-[10px] h-4 w-4 items-center justify-center rounded-full ${
                             isDarkMode ? 'bg-blue-500 bg-opacity-40 text-white' : 'bg-blue-200 text-blue-700'
                           } font-bold`}>
                             {dayEvents.length}
@@ -644,6 +661,7 @@ const Calendar = forwardRef(function Calendar({ isDarkMode }, ref) {
         onEventClick={handleEventClick}
         onTimeSlotClick={openNewEventModal}
         weatherData={weatherData}
+        today={new Date(2025, 5, 24)}
       />
     );
   };
@@ -992,35 +1010,35 @@ const Calendar = forwardRef(function Calendar({ isDarkMode }, ref) {
   return (
     <div className="h-full flex flex-col">
       {/* Header */}
-      <div className={`flex items-center justify-between p-2 sm:p-4 border-b ${
+      <div className={`flex items-center justify-between p-2 md:p-4 border-b ${
         isDarkMode ? 'border-gray-700 bg-gray-800' : 'border-gray-200 bg-white'
       }`}>
-        <div className="flex items-center space-x-2 sm:space-x-4 min-w-0 flex-1">
-          <h1 className="text-lg sm:text-2xl font-bold truncate">
+        <div className="flex items-center space-x-2 md:space-x-4 min-w-0 flex-1">
+          <h1 className="text-lg md:text-2xl font-bold truncate">
             {viewMode === 'month' 
               ? currentDate.toLocaleString('default', { 
-                  month: window.innerWidth < 640 ? 'short' : 'long', 
+                  month: 'long', 
                   year: 'numeric' 
                 })
               : viewMode === 'week'
               ? `Week of ${currentDate.toLocaleDateString('en-US', { 
                   month: 'short', 
                   day: 'numeric', 
-                  year: window.innerWidth < 640 ? undefined : 'numeric' 
+                  year: 'numeric' 
                 })}`
               : viewMode === 'day'
               ? currentDate.toLocaleDateString('en-US', { 
-                  weekday: window.innerWidth < 640 ? 'short' : 'long', 
+                  weekday: 'long', 
                   month: 'short', 
                   day: 'numeric', 
-                  year: window.innerWidth < 640 ? undefined : 'numeric' 
+                  year: 'numeric' 
                 })
               : `${currentDate.getFullYear()}`
             }
           </h1>
           <button
             onClick={goToToday}
-            className={`px-2 sm:px-3 py-1 text-xs sm:text-sm rounded-lg transition-colors whitespace-nowrap ${
+            className={`px-2 py-1 md:px-3 text-xs md:text-sm rounded-lg transition-colors whitespace-nowrap ${
               isDarkMode ? 'bg-blue-600 hover:bg-blue-700' : 'bg-blue-500 hover:bg-blue-600'
             } text-white`}
           >
@@ -1028,14 +1046,14 @@ const Calendar = forwardRef(function Calendar({ isDarkMode }, ref) {
           </button>
         </div>
 
-        <div className="flex items-center space-x-1 sm:space-x-2">
+        <div className="flex items-center space-x-1 md:space-x-2">
           {/* View toggle - Mobile optimized */}
           <div className={`flex rounded-lg overflow-hidden ${
             isDarkMode ? 'bg-gray-700' : 'bg-gray-100'
           }`}>
             <button
               onClick={() => setViewMode('year')}
-              className={`px-2 sm:px-3 py-1 sm:py-2 text-xs sm:text-sm transition-colors ${
+              className={`px-2 md:px-3 py-1 md:py-2 text-xs md:text-sm transition-colors ${
                 viewMode === 'year'
                   ? isDarkMode ? 'bg-blue-600 text-white' : 'bg-blue-500 text-white'
                   : isDarkMode ? 'text-gray-300 hover:bg-gray-600' : 'text-gray-600 hover:bg-gray-200'
@@ -1046,7 +1064,7 @@ const Calendar = forwardRef(function Calendar({ isDarkMode }, ref) {
             </button>
             <button
               onClick={() => setViewMode('month')}
-              className={`px-2 sm:px-3 py-1 sm:py-2 text-xs sm:text-sm transition-colors ${
+              className={`px-2 md:px-3 py-1 md:py-2 text-xs md:text-sm transition-colors ${
                 viewMode === 'month'
                   ? isDarkMode ? 'bg-blue-600 text-white' : 'bg-blue-500 text-white'
                   : isDarkMode ? 'text-gray-300 hover:bg-gray-600' : 'text-gray-600 hover:bg-gray-200'
@@ -1057,7 +1075,7 @@ const Calendar = forwardRef(function Calendar({ isDarkMode }, ref) {
             </button>
             <button
               onClick={() => setViewMode('week')}
-              className={`px-2 sm:px-3 py-1 sm:py-2 text-xs sm:text-sm transition-colors ${
+              className={`px-2 md:px-3 py-1 md:py-2 text-xs md:text-sm transition-colors ${
                 viewMode === 'week'
                   ? isDarkMode ? 'bg-blue-600 text-white' : 'bg-blue-500 text-white'
                   : isDarkMode ? 'text-gray-300 hover:bg-gray-600' : 'text-gray-600 hover:bg-gray-200'
@@ -1068,22 +1086,23 @@ const Calendar = forwardRef(function Calendar({ isDarkMode }, ref) {
             </button>
             <button
               onClick={() => setViewMode('day')}
-              className={`px-2 sm:px-3 py-1 sm:py-2 text-xs sm:text-sm transition-colors ${
+              className={`px-2 md:px-3 py-1 md:py-2 text-xs md:text-sm transition-colors ${
                 viewMode === 'day'
                   ? isDarkMode ? 'bg-blue-600 text-white' : 'bg-blue-500 text-white'
                   : isDarkMode ? 'text-gray-300 hover:bg-gray-600' : 'text-gray-600 hover:bg-gray-200'
               }`}
             >
-              <FaCalendarDay className="sm:mr-1" />
+              <FaCalendarDay className="hidden sm:inline mr-1" />
               <span className="hidden sm:inline">Day</span>
+              <span className="sm:hidden">D</span>
             </button>
           </div>
 
           {/* Navigation - Mobile optimized */}
-          <div className="flex items-center space-x-1">
+          <div className="flex items-center space-x-0 md:space-x-1">
             <button
               onClick={goToPrevious}
-              className={`p-1.5 sm:p-2 rounded-lg transition-colors ${
+              className={`p-2 rounded-lg transition-colors ${
                 isDarkMode ? 'hover:bg-gray-700' : 'hover:bg-gray-100'
               }`}
             >
@@ -1091,7 +1110,7 @@ const Calendar = forwardRef(function Calendar({ isDarkMode }, ref) {
             </button>
             <button
               onClick={goToNext}
-              className={`p-1.5 sm:p-2 rounded-lg transition-colors ${
+              className={`p-2 rounded-lg transition-colors ${
                 isDarkMode ? 'hover:bg-gray-700' : 'hover:bg-gray-100'
               }`}
             >
@@ -1102,7 +1121,7 @@ const Calendar = forwardRef(function Calendar({ isDarkMode }, ref) {
         
           <button
             onClick={() => openNewEventModal(selectedDate)}
-            className={`p-1.5 sm:p-2 rounded-lg transition-colors ${
+            className={`p-2 rounded-lg transition-colors ${
               isDarkMode ? 'bg-green-600 hover:bg-green-700' : 'bg-green-500 hover:bg-green-600'
             } text-white`}
           >
@@ -1126,4 +1145,4 @@ const Calendar = forwardRef(function Calendar({ isDarkMode }, ref) {
 });
 
 export default Calendar;
-       
+

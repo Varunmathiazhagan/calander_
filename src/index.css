@@ -68,14 +68,14 @@ code {
 
 /* Simple professional styling for leave days */
 .leave-day-professional {
-  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
-  border: 1px solid #b91c1c;
+  background: linear-gradient(135deg, #f87171 0%, #ef4444 100%);
+  border: 1px solid #dc2626;
 }
 
 .leave-day-professional:hover {
-  background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
   transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+  box-shadow: 0 4px 12px rgba(248, 113, 113, 0.3);
 }
 
 /* Clean border styles */
@@ -131,8 +131,8 @@ code {
 }
 
 @keyframes pulse-glow {
-  0%, 100% { box-shadow: 0 0 20px rgba(239, 68, 68, 0.5); }
-  50% { box-shadow: 0 0 40px rgba(239, 68, 68, 0.8); }
+  0%, 100% { box-shadow: 0 0 20px rgba(248, 113, 113, 0.5); }
+  50% { box-shadow: 0 0 40px rgba(248, 113, 113, 0.8); }
 }
 
 /* Stripe pattern for leave days */
@@ -154,7 +154,7 @@ code {
 /* Leave day special effects */
 .leave-day-glow {
   box-shadow: 
-    0 0 20px rgba(239, 68, 68, 0.3),
+    0 0 20px rgba(248, 113, 113, 0.3),
     0 0 40px rgba(251, 146, 60, 0.2),
     0 0 60px rgba(245, 158, 11, 0.1);
 }
@@ -184,3 +184,4 @@ code {
 .leave-events-scroll::-webkit-scrollbar-thumb:hover {
   background: linear-gradient(to bottom, #b91c1c, #c2410c, #b45309);
 }
+

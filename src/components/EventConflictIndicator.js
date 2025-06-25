@@ -23,8 +23,8 @@ const EventConflictIndicator = ({ events, isDarkMode, onEventClick }) => {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
     >
-      <FaExclamationTriangle className="text-[10px]" />
-      <span className="text-[10px]">{conflictingEvents.length} overlapping events</span>
+      <FaExclamationTriangle className="text-lg" />
+      <span className="text-lg">{conflictingEvents.length} overlapping events</span>
     </motion.div>
   );
 };

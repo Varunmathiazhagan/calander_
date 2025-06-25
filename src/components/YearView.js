@@ -78,7 +78,7 @@ const YearView = ({
     return (
       <motion.div
         key={monthIndex}
-        className={`p-4 rounded-lg border cursor-pointer transition-all hover:shadow-lg ${
+        className={`p-2 md:p-4 rounded-lg border cursor-pointer transition-all hover:shadow-lg ${
           isDarkMode 
             ? 'bg-gray-800 border-gray-700 hover:bg-gray-750' 
             : 'bg-white border-gray-200 hover:bg-gray-50'
@@ -90,28 +90,28 @@ const YearView = ({
         transition={{ delay: monthIndex * 0.05 }}
       >
         {/* Month header */}
-        <div className="flex items-center justify-between mb-3">
-          <h3 className="font-semibold text-lg">
+        <div className="flex items-center justify-between mb-2 md:mb-3">
+          <h3 className="font-semibold text-base md:text-2xl">
             {monthDate.toLocaleDateString('en-US', { month: 'long' })}
           </h3>
-          <div className="text-sm opacity-75">
+          <div className="text-xs md:text-sm opacity-75">
             {getMonthEvents(monthIndex).length} events
           </div>
         </div>
 
         {/* Days header */}
-        <div className="grid grid-cols-7 gap-1 mb-2">
+        <div className="grid grid-cols-7 gap-1 mb-1 md:mb-2">
           {['S', 'M', 'T', 'W', 'T', 'F', 'S'].map(day => (
-            <div key={day} className="text-center text-xs font-medium opacity-75 py-1">
+            <div key={day} className="text-center text-xs md:text-sm font-medium opacity-75 py-1">
               {day}
             </div>
           ))}
         </div>
 
         {/* Calendar grid */}
-        <div className="space-y-1">
+        <div className="space-y-0.5 md:space-y-1">
           {weeks.map((week, weekIndex) => (
-            <div key={weekIndex} className="grid grid-cols-7 gap-1">
+            <div key={weekIndex} className="grid grid-cols-7 gap-0.5 md:gap-1">
               {week.map((dayInfo, dayIndex) => {
                 const { date: dayDate, isCurrentMonth } = dayInfo;
                 const dayNumber = dayDate.getDate();
@@ -125,7 +125,7 @@ const YearView = ({
                 return (
                   <div
                     key={`${weekIndex}-${dayIndex}`}
-                    className={`relative h-8 flex items-center justify-center text-xs rounded transition-colors cursor-pointer ${
+                    className={`relative h-6 w-6 md:h-8 md:w-auto flex items-center justify-center text-xs md:text-sm rounded transition-colors cursor-pointer ${
                       isCurrentMonth
                         ? isToday
                           ? 'bg-blue-500 text-white font-bold'
@@ -143,7 +143,7 @@ const YearView = ({
                   >
                     {dayNumber}
                     {hasEvents && isCurrentMonth && (
-                      <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2">
+                      <div className="absolute bottom-0.5 left-1/2 transform -translate-x-1/2">
                         <div className={`w-1 h-1 rounded-full ${
                           isToday ? 'bg-white' : hasHoliday ? 'bg-red-500' : 'bg-blue-500'
                         }`}></div>
@@ -157,8 +157,8 @@ const YearView = ({
         </div>
 
         {/* Month summary */}
-        <div className="mt-3 pt-3 border-t border-gray-200 dark:border-gray-700">
-          <div className="grid grid-cols-2 gap-2 text-xs">
+        <div className="hidden md:block mt-3 pt-3 border-t border-gray-200 dark:border-gray-700">
+          <div className="grid grid-cols-2 gap-2 text-sm">
             <div className="flex items-center justify-between">
               <span className="opacity-75">Work:</span>
               <span className="font-semibold">
@@ -180,26 +180,26 @@ const YearView = ({
   return (
     <div className="h-full flex flex-col">
       {/* Year header */}
-      <div className={`p-6 border-b ${isDarkMode ? 'border-gray-700' : 'border-gray-200'}`}>
-        <div className="flex items-center justify-between">
+      <div className={`p-4 md:p-6 border-b ${isDarkMode ? 'border-gray-700' : 'border-gray-200'}`}>
+        <div className="flex flex-col md:flex-row items-center justify-between gap-4">
           <div>
-            <h2 className="text-3xl font-bold mb-2">{year}</h2>
-            <p className="text-lg opacity-75">
+            <h2 className="text-2xl md:text-3xl font-bold mb-1 md:mb-2">{year}</h2>
+            <p className="text-base md:text-lg opacity-75">
               {events.length} total events • {events.filter(e => e.category === 'holiday' || e.isWorkingDayLeave).length} holidays
             </p>
           </div>
           
           <div className="text-right">
-            <div className="text-sm opacity-75 mb-1">Quick stats for {year}</div>
+            <div className="text-xs md:text-sm opacity-75 mb-1">Quick stats for {year}</div>
             <div className="grid grid-cols-2 gap-4 text-center">
               <div>
-                <div className="text-2xl font-bold text-blue-600">
+                <div className="text-xl md:text-2xl font-bold text-blue-600">
                   {events.filter(e => e.category === 'work').length}
                 </div>
                 <div className="text-xs opacity-75">Work Events</div>
               </div>
               <div>
-                <div className="text-2xl font-bold text-green-600">
+                <div className="text-xl md:text-2xl font-bold text-green-600">
                   {events.filter(e => e.category === 'social').length}
                 </div>
                 <div className="text-xs opacity-75">Social Events</div>
@@ -210,8 +210,8 @@ const YearView = ({
       </div>
 
       {/* Months grid */}
-      <div className="flex-1 overflow-y-auto p-6">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+      <div className="flex-1 overflow-y-auto p-2 md:p-6">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2 md:gap-6">
           {months.map((monthDate, index) => renderMiniMonth(monthDate, index))}
         </div>
       </div>
@@ -221,4 +221,3 @@ const YearView = ({
 
 export default YearView;
 
-      

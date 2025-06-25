@@ -8,7 +8,8 @@ const DayView = ({
   isDarkMode, 
   onEventClick, 
   onTimeSlotClick, 
-  weatherData = {} 
+  weatherData = {},
+  today = new Date()
 }) => {
   // Check date validity
   if (!date || !(date instanceof Date) || isNaN(date.getTime())) {
@@ -136,74 +137,93 @@ const DayView = ({
   ));
 
   return (
-    <div className="h-full flex flex-col">
-      {/* Day Header */}
-      <div className={`p-3 sm:p-6 border-b ${isDarkMode ? 'border-gray-700' : 'border-gray-200'}`}>
-        <div className="flex items-center justify-between">
+    <div className="h-full flex flex-col relative">
+      {/* Enhanced Day Header with responsive design */}
+      <div className={`p-4 md:p-6 border-b ${isDarkMode ? 'border-gray-700' : 'border-gray-200'} bg-gradient-to-r ${
+        isDarkMode ? 'from-gray-800 to-gray-750' : 'from-white to-gray-50'
+      }`}>
+        <div className="flex flex-wrap items-center justify-between gap-3">
           <div className="min-w-0 flex-1">
-            <h2 className="text-xl sm:text-3xl font-bold mb-2">
+            <h2 className="text-xl md:text-3xl font-bold mb-2 bg-gradient-to-r from-blue-500 to-purple-600 bg-clip-text text-transparent">
               {date.toLocaleDateString('en-US', { 
-                weekday: window.innerWidth < 640 ? 'short' : 'long', 
+                weekday: 'long', 
                 year: 'numeric', 
-                month: window.innerWidth < 640 ? 'short' : 'long', 
+                month: 'long', 
                 day: 'numeric' 
               })}
             </h2>
-            <p className="text-sm sm:text-lg opacity-75">
+            <p className="text-base md:text-lg opacity-75">
               {events.length} event{events.length !== 1 ? 's' : ''} scheduled
+              {events.filter(e => e.isWorkingDayLeave || e.category === 'holiday').length > 0 && 
+                ` • ${events.filter(e => e.isWorkingDayLeave || e.category === 'holiday').length} holiday(s)`
+              }
             </p>
           </div>
           
+          {/* Enhanced weather card with animation */}
           {dayWeather && (
-            <div className={`p-2 sm:p-4 rounded-xl ${isDarkMode ? 'bg-gray-700' : 'bg-gray-100'} ml-4`}>
+            <motion.div 
+              className={`p-2 md:p-4 rounded-xl ${
+                isDarkMode ? 'bg-gray-700' : 'bg-gray-100'
+              } shadow-sm border ${isDarkMode ? 'border-gray-600' : 'border-gray-200'}`}
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2 }}
+            >
               <div className="text-center">
-                <div className="text-xl sm:text-3xl mb-1 sm:mb-2">
+                <div className="text-2xl md:text-3xl mb-2 animate-pulse">
                   {getWeatherIcon(dayWeather.condition)}
                 </div>
-                <div className="text-base sm:text-xl font-semibold">{dayWeather.temp}°C</div>
-                <div className="text-xs sm:text-sm opacity-75 hidden sm:block">
+                <div className="text-lg md:text-xl font-bold">{dayWeather.temp}°C</div>
+                <div className="text-xs md:text-sm opacity-75 block">
                   {getWeatherDescription(dayWeather.condition, dayWeather.humidity)}
                 </div>
               </div>
-            </div>
+            </motion.div>
           )}
         </div>
       </div>
 
-      {/* Timeline */}
+      {/* Enhanced Timeline with better spacing */}
       <div className="flex-1 overflow-y-auto">
         <div className="relative">
-          {/* Hour grid */}
+          {/* Hour grid with improved hover effects */}
           {hours.map(hour => (
             <div
               key={hour}
-              className={`relative h-16 sm:h-20 border-b ${isDarkMode ? 'border-gray-700' : 'border-gray-200'} last:border-b-0 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors cursor-pointer`}
+              className={`relative h-20 border-b ${
+                isDarkMode ? 'border-gray-700' : 'border-gray-200'
+              } last:border-b-0 transition-colors cursor-pointer ${
+                date.toDateString() === new Date().toDateString() && new Date().getHours() === hour
+                  ? isDarkMode ? 'bg-blue-900 bg-opacity-10' : 'bg-blue-50'
+                  : ''
+              } hover:bg-gray-50 dark:hover:bg-gray-800`}
               onClick={() => {
                 const clickDate = new Date(date);
                 clickDate.setHours(hour, 0, 0, 0);
                 onTimeSlotClick && onTimeSlotClick(clickDate);
               }}
             >
-              <div className={`absolute left-0 top-0 w-16 sm:w-20 h-full flex items-start justify-center pt-1 sm:pt-2 ${
-                isDarkMode ? 'text-gray-400' : 'text-gray-500'
-              } text-xs sm:text-sm font-medium border-r ${isDarkMode ? 'border-gray-700' : 'border-gray-200'}`}>
+              {/* Enhanced time column with gradient */}
+              <div className={`absolute left-0 top-0 w-16 md:w-20 h-full flex items-start justify-center pt-2 ${
+                isDarkMode ? 'text-gray-400 bg-gray-800' : 'text-gray-500 bg-gray-50'
+              } text-xs md:text-sm font-medium border-r ${isDarkMode ? 'border-gray-700' : 'border-gray-200'}`}>
                 {formatHour(hour)}
               </div>
               
-              {/* Current time indicator - Mobile optimized */}
-              {date.toDateString() === new Date().toDateString() && 
+              {/* Enhanced current time indicator with better animation */}
+              {date.toDateString() === today.toDateString() && 
                new Date().getHours() === hour && (
                 <div 
-                  className="absolute left-16 sm:left-20 bg-red-500 h-0.5 z-30 shadow-lg animate-pulse"
+                  className="absolute left-16 md:left-20 right-0 bg-red-500 h-0.5 z-30 shadow-lg"
                   style={{ 
-                    width: 'calc(100% - 4rem)',
                     top: `${(new Date().getMinutes() / 60) * 100}%`
                   }}
                 >
-                  <div className="absolute -left-1.5 sm:-left-2 -top-1.5 w-3 h-3 sm:w-4 sm:h-4 bg-red-500 rounded-full shadow-md flex items-center justify-center">
-                    <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-white rounded-full"></div>
+                  <div className="absolute -left-2 -top-1.5 w-4 h-4 bg-red-500 rounded-full shadow-md flex items-center justify-center animate-pulse">
+                    <div className="w-2 h-2 bg-white rounded-full"></div>
                   </div>
-                  <div className="absolute -right-0 -top-5 sm:-top-6 bg-red-500 text-white text-xs px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-md shadow-lg font-medium">
+                  <div className="absolute -right-1 -top-6 bg-red-500 text-white text-xs px-2 py-1 rounded-md shadow-lg font-medium">
                     {new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                   </div>
                 </div>
@@ -211,35 +231,37 @@ const DayView = ({
             </div>
           ))}
 
-          {/* Events overlay - Mobile optimized */}
-          <div className="absolute inset-0 left-16 sm:left-20 right-0">
+          {/* Enhanced Events overlay with better animation and styling */}
+          <div className="absolute inset-0 left-16 md:left-20 right-0">
             {processedEvents.map((event, index) => {
               const position = getEventPosition(event);
               const startDate = new Date(event.start);
               const endDate = new Date(event.end);
+              const isLeaveEvent = event.isWorkingDayLeave || event.category === 'holiday';
               
               return (
                 <motion.div
                   key={event.id || index}
-                  className={`absolute left-2 sm:left-4 right-2 sm:right-4 rounded-lg shadow-md cursor-pointer z-20 overflow-hidden ${
-                    event.isWorkingDayLeave || event.category === 'holiday'
-                      ? 'bg-gradient-to-r from-red-500 to-red-600 text-white border-2 border-red-600 shadow-lg hover:bg-red-600 hover:shadow-xl'
+                  className={`absolute left-2 md:left-4 right-2 md:right-4 rounded-lg shadow-md cursor-pointer z-20 overflow-hidden ${
+                    isLeaveEvent
+                      ? 'bg-gradient-to-r from-red-400 to-red-500 text-white border border-red-500 shadow-lg bg-stripe-pattern'
                       : `border-l-4 ${event.hasConflict ? 'ring-2 ring-orange-400' : ''}`
                   }`}
-                  style={event.isWorkingDayLeave || event.category === 'holiday' ? {} : {
+                  style={isLeaveEvent ? { ...position, minHeight: '48px', textShadow: '0 1px 4px rgba(0,0,0,0.7)' } : {
                     ...position,
-                    backgroundColor: isDarkMode ? `${event.color}20` : `${event.color}15`,
+                    backgroundColor: isDarkMode ? `${event.color}15` : `${event.color}10`,
                     borderLeftColor: event.color,
+                    color: isDarkMode ? 'white' : event.color,
                     minHeight: '48px'
                   }}
                   onClick={() => onEventClick && onEventClick(event)}
-                  whileHover={{ scale: 1.02, x: 4 }}
-                  initial={{ opacity: 0, x: -20 }}
+                  whileHover={{ scale: 1.01, x: 2, boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)" }}
+                  initial={{ opacity: 0, x: -10 }}
                   animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: index * 0.1 }}
+                  transition={{ delay: index * 0.05, duration: 0.2 }}
                 >
-                  {/* Add a subtle pattern or design for leave events */}
-                  {(event.isWorkingDayLeave || event.category === 'holiday') && (
+                  {/* Subtle pattern for leave events */}
+                  {isLeaveEvent && (
                     <div className="absolute inset-0 opacity-10">
                       <div className="w-full h-full" style={{
                         backgroundImage: "url(\"data:image/svg+xml,%3Csvg width='20' height='20' viewBox='0 0 20 20' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23ffffff' fill-opacity='0.2' fill-rule='evenodd'%3E%3Ccircle cx='3' cy='3' r='3'/%3E%3Ccircle cx='13' cy='13' r='3'/%3E%3C/g%3E%3C/svg%3E\")"
@@ -247,80 +269,81 @@ const DayView = ({
                     </div>
                   )}
                   
-                  <div className="p-2 sm:p-4 h-full">
+                  <div className="p-2 md:p-4 h-full">
                     <div className="flex items-start justify-between h-full">
                       <div className="flex-1 min-w-0">
-                        {/* Enhanced event title with badge for holidays */}
-                        <h4 className={`mb-1 sm:mb-2 flex items-center gap-1 sm:gap-2 ${
-                          event.isWorkingDayLeave || event.category === 'holiday'
-                            ? 'font-bold text-sm sm:text-lg text-white'
-                            : 'font-bold text-sm sm:text-lg'
-                        }`} style={event.isWorkingDayLeave || event.category === 'holiday' ? {} : { color: event.color }}>
-                          {event.hasConflict && !event.isWorkingDayLeave && event.category !== 'holiday' && (
+                        {/* Enhanced event title with animation for holidays */}
+                        <h4 className={`mb-2 flex items-center gap-2 text-sm md:text-base ${
+                          isLeaveEvent
+                            ? 'font-bold text-base text-white'
+                            : 'font-bold text-base'
+                        }`} style={isLeaveEvent ? {} : { color: event.color }}>
+                          {event.hasConflict && !isLeaveEvent && (
                             <span className="flex h-2 w-2 relative mr-1">
                               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-orange-400 opacity-75"></span>
                               <span className="relative inline-flex rounded-full h-2 w-2 bg-orange-500"></span>
                             </span>
                           )}
                           
-                          {/* Simple leave icon with animation */}
-                          {(event.isWorkingDayLeave || event.category === 'holiday') && (
-                            <span className="text-sm sm:text-lg inline-block animate-pulse">🏢</span>
+                          {/* Enhanced leave icon with animation */}
+                          {isLeaveEvent && (
+                            <span className="text-base inline-block animate-pulse">🏢</span>
                           )}
                           
-                          <span className="break-words">{event.title}</span>
+                          <span className="break-words truncate">{event.title}</span>
                           
-                          {(event.isWorkingDayLeave || event.category === 'holiday') && (
-                            <span className="ml-2 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-white bg-opacity-25 text-white">
+                          {/* Enhanced badge for leave type */}
+                          {isLeaveEvent && (
+                            <span className="ml-2 inline-flex items-center px-2 py-0.5 rounded-full text-xs font-bold bg-white bg-opacity-25 text-gray-900 backdrop-blur-sm">
                               {event.leaveType || 'Holiday'}
                             </span>
                           )}
                         </h4>
                         
-                        {/* Time and details for regular events - Mobile optimized */}
-                        {!event.isWorkingDayLeave && event.category !== 'holiday' && (
+                        {/* Enhanced time and details for regular events */}
+                        {!isLeaveEvent && (
                           <>
-                            <div className="flex items-center gap-2 sm:gap-3 mb-1 sm:mb-2 text-xs sm:text-sm opacity-80">
+                            <div className="flex items-center gap-3 mb-2 text-xs opacity-80">
                               <span className="flex items-center gap-1">
-                                <FaRegClock />
+                                <FaRegClock className="text-xs" />
                                 {formatEventTime(startDate, endDate)}
                               </span>
                             </div>
                             
                             {event.location && (
-                              <div className="flex items-center gap-1 sm:gap-2 mb-1 sm:mb-2 text-xs sm:text-sm opacity-80">
-                                <FaMapMarkerAlt />
+                              <div className="flex items-center gap-2 mb-2 text-xs opacity-80">
+                                <FaMapMarkerAlt className="text-xs" />
                                 <span className="truncate">{event.location}</span>
                               </div>
                             )}
                             
                             {event.description && (
-                              <p className="text-xs sm:text-sm opacity-75 mb-1 sm:mb-2 line-clamp-2 sm:line-clamp-3">
+                              <p className="text-xs opacity-75 mb-2 line-clamp-2 md:line-clamp-3">
                                 {event.description}
                               </p>
                             )}
                           </>
                         )}
 
-                        {/* Enhanced leave day content with icons and badges */}
-                        {(event.isWorkingDayLeave || event.category === 'holiday') && (
-                          <div className="mt-2 sm:mt-4">
-                            <div className="text-white text-xs sm:text-base font-semibold mb-2 sm:mb-3 flex items-center">
+                        {/* Enhanced leave day content with improved styling */}
+                        {isLeaveEvent && (
+                          <div className="mt-3">
+                            <div className="text-white text-sm font-semibold mb-2 flex items-center">
                               <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16v2a2 2 0 01-2 2H5a2 2 0 01-2-2v-7a2 2 0 012-2h2m3-4H9a2 2 0 00-2 2v7a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-1m-1 4l-3 3m0 0l-3-3m3 3V3" />
                               </svg>
                               Office Closed - Paid Holiday
                             </div>
-                            <div className="flex flex-wrap gap-1 sm:gap-2 mb-2 sm:mb-3">
-                              <span className="bg-white bg-opacity-30 text-white px-2 py-0.5 sm:px-3 sm:py-1 rounded-md text-xs sm:text-sm font-medium backdrop-blur-sm">
+                            <div className="flex flex-wrap gap-2 mb-2">
+                              <span className="bg-white bg-opacity-30 text-gray-900 px-2 py-0.5 rounded-md text-xs font-bold backdrop-blur-sm">
                                 {event.leaveType?.toUpperCase() || 'NATIONAL HOLIDAY'}
                               </span>
-                              <span className="bg-white bg-opacity-30 text-white px-2 py-0.5 sm:px-3 sm:py-1 rounded-md text-xs sm:text-sm font-medium backdrop-blur-sm">
+                              <span className="bg-white bg-opacity-30 text-gray-900 px-2 py-0.5 rounded-md text-xs font-bold backdrop-blur-sm">
                                 PAID LEAVE
                               </span>
                             </div>
                             {event.description && (
-                              <p className="text-white text-xs sm:text-sm opacity-90 border-l-2 border-white border-opacity-50 pl-2">
+                              <p className="text-white text-xs opacity-90 border-l-2 border-white border-opacity-50 pl-2">
                                 {event.description}
                               </p>
                             )}
@@ -328,25 +351,36 @@ const DayView = ({
                         )}
                       </div>
                       
-                      {/* Icons for regular events - Mobile optimized */}
-                      {!event.isWorkingDayLeave && event.category !== 'holiday' && (
-                        <div className="flex flex-col items-end gap-1 sm:gap-2 ml-2 sm:ml-4">
+                      {/* Enhanced icons for regular events */}
+                      {!isLeaveEvent && (
+                        <div className="flex flex-col items-end gap-2 ml-2">
                           <div className="flex flex-col gap-1">
                             {event.isRecurring && (
-                              <FaSyncAlt className="text-xs sm:text-sm opacity-75" style={{ color: event.color }} />
+                              <FaSyncAlt className="text-xs opacity-75" style={{ color: event.color }} />
                             )}
                             {event.hasVideoCall && (
-                              <FaVideo className="text-xs sm:text-sm opacity-75" style={{ color: event.color }} />
+                              <FaVideo className="text-xs opacity-75" style={{ color: event.color }} />
                             )}
                             {event.attendees && event.attendees.length > 0 && (
                               <div className="flex items-center gap-1">
-                                <FaUsers className="text-xs sm:text-sm opacity-75" style={{ color: event.color }} />
+                                <FaUsers className="text-xs opacity-75" style={{ color: event.color }} />
                                 <span className="text-xs opacity-75" style={{ color: event.color }}>
                                   {event.attendees.length}
                                 </span>
                               </div>
                             )}
                           </div>
+                          
+                          {/* Priority indicator */}
+                          {event.priority === 'high' && (
+                            <div className="w-2 h-2 bg-red-500 rounded-full mt-1" title="High Priority"></div>
+                          )}
+                          {event.priority === 'medium' && (
+                            <div className="w-2 h-2 bg-yellow-500 rounded-full mt-1" title="Medium Priority"></div>
+                          )}
+                          {event.priority === 'low' && (
+                            <div className="w-2 h-2 bg-green-500 rounded-full mt-1" title="Low Priority"></div>
+                          )}
                         </div>
                       )}
                     </div>
@@ -358,28 +392,40 @@ const DayView = ({
         </div>
       </div>
 
-      {/* Current time floating indicator */}
-      {date.toDateString() === new Date().toDateString() && (
+      {/* Enhanced current time floating indicator with animations */}
+      {date.toDateString() === today.toDateString() && (
         <motion.div
-          className="fixed right-2 sm:right-8 top-1/2 transform -translate-y-1/2 z-50"
+          className="absolute right-2 md:right-8 top-1/2 transform -translate-y-1/2 z-50"
           initial={{ opacity: 0, x: 50 }}
           animate={{ opacity: 1, x: 0 }}
-          transition={{ delay: 0.5 }}
+          transition={{ delay: 0.5, type: "spring", damping: 20 }}
         >
-          <div className={`p-2 sm:p-4 rounded-xl shadow-xl border-2 border-red-400 ${
-            isDarkMode ? 'bg-gray-800 text-white' : 'bg-white text-gray-900'
-          }`}>
+          <motion.div 
+            className={`p-4 rounded-xl shadow-xl border ${
+              isDarkMode ? 'bg-gray-800 text-white border-gray-700' : 'bg-white text-gray-900 border-gray-200'
+            }`}
+            whileHover={{ scale: 1.05 }}
+            animate={{ 
+              boxShadow: ["0px 0px 0px rgba(0,0,0,0.1)", "0px 4px 20px rgba(0,0,0,0.15)", "0px 0px 0px rgba(0,0,0,0.1)"],
+              y: [0, -3, 0]
+            }}
+            transition={{ 
+              repeat: Infinity, 
+              repeatType: "reverse", 
+              duration: 2 
+            }}
+          >
             <div className="text-center">
               <div className="text-xs font-medium opacity-75 mb-1">Current Time</div>
-              <div className="text-lg sm:text-2xl font-bold text-red-500 mb-1">
+              <div className="text-xl md:text-2xl font-bold text-red-500 mb-1">
                 {new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
               </div>
               <div className="text-xs opacity-75">
                 {new Date().toLocaleDateString('en-US', { weekday: 'short' })}
               </div>
-              <div className="mt-2 w-6 sm:w-8 h-1 bg-red-500 rounded-full mx-auto animate-pulse"></div>
+              <div className="mt-2 w-8 h-1 bg-red-500 rounded-full mx-auto animate-pulse"></div>
             </div>
-          </div>
+          </motion.div>
         </motion.div>
       )}
     </div>

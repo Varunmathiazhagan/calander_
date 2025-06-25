@@ -115,21 +115,21 @@ const WeekView = ({ date, events = [], isDarkMode, onEventClick, onTimeSlotClick
 
   return (
     <div className="h-full flex flex-col">
-      {/* Week Header - Mobile optimized */}
+      {/* Enhanced Week Header with responsive design */}
       <div className={`border-b ${isDarkMode ? 'border-gray-700' : 'border-gray-200'}`}>
-        <div className="grid grid-cols-8 divide-x divide-gray-200 dark:divide-gray-700">
-          {/* Time column header */}
-          <div className="p-2 sm:p-4">
-            <div className="text-sm sm:text-lg font-semibold">
-              Week of {weekStart.toLocaleDateString('en-US', { 
+        <div className="grid grid-cols-8 divide-x divide-gray-200 dark:divide-gray-700 min-w-[700px] md:min-w-full">
+          {/* Time column header with gradient background */}
+          <div className={`p-2 md:p-4 ${isDarkMode ? 'bg-gray-800' : 'bg-gray-50'}`}>
+            <div className="text-sm md:text-base font-semibold bg-gradient-to-r from-blue-500 to-purple-600 bg-clip-text text-transparent">
+              <span className="hidden sm:inline">Week of</span> {weekStart.toLocaleDateString('en-US', { 
                 month: 'short', 
                 day: 'numeric',
-                year: window.innerWidth < 640 ? undefined : 'numeric'
+                year: 'numeric'
               })}
             </div>
           </div>
           
-          {/* Day headers - Mobile optimized */}
+          {/* Enhanced day headers with weather and event count */}
           {weekDays.map((day, index) => {
             const dayEvents = getEventsForDay(day);
             const isToday = day.toDateString() === today.toDateString();
@@ -137,23 +137,36 @@ const WeekView = ({ date, events = [], isDarkMode, onEventClick, onTimeSlotClick
             const dayWeather = weatherData[dateKey];
             
             return (
-              <div key={index} className={`p-2 sm:p-4 text-center ${isToday ? 'bg-blue-50 dark:bg-blue-900' : ''}`}>
-                <div className={`text-xs sm:text-sm font-medium mb-1 ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>
-                  {day.toLocaleDateString('en-US', { weekday: window.innerWidth < 640 ? 'short' : 'short' })}
-                </div>
-                <div className={`text-base sm:text-lg font-bold mb-1 sm:mb-2 ${
+              <div 
+                key={index} 
+                className={`p-2 md:p-4 text-center transition-colors ${
                   isToday 
-                    ? 'bg-blue-500 text-white rounded-full w-6 h-6 sm:w-8 sm:h-8 flex items-center justify-center mx-auto text-sm sm:text-lg' 
+                    ? isDarkMode 
+                      ? 'bg-blue-900 bg-opacity-30' 
+                      : 'bg-blue-50'
+                    : ''
+                } hover:bg-gray-50 dark:hover:bg-gray-800`}
+              >
+                <div className={`text-xs md:text-sm font-medium mb-1 ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>
+                  {day.toLocaleDateString('en-US', { weekday: 'short' })}
+                </div>
+                <div className={`text-base md:text-lg font-bold mb-2 ${
+                  isToday 
+                    ? 'bg-blue-500 text-white rounded-full w-7 h-7 md:w-8 md:h-8 flex items-center justify-center mx-auto text-sm md:text-base shadow-md' 
                     : ''
                 }`}>
                   {day.getDate()}
                 </div>
                 {dayWeather && (
-                  <div className="text-xs opacity-75 hidden sm:block">
-                    {getWeatherIcon(dayWeather.condition)} {dayWeather.temp}°
+                  <div className="text-xs opacity-75 block">
+                    {getWeatherIcon(dayWeather.condition)} <span className="hidden sm:inline">{dayWeather.temp}°</span>
                   </div>
                 )}
-                <div className="text-xs mt-1 opacity-75">
+                <div className={`text-[10px] md:text-xs mt-1 ${
+                  dayEvents.length > 0 
+                    ? 'bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300 px-1.5 py-0.5 rounded-full inline-block'
+                    : 'opacity-50'
+                }`}>
                   {dayEvents.length} event{dayEvents.length !== 1 ? 's' : ''}
                 </div>
               </div>
@@ -162,25 +175,27 @@ const WeekView = ({ date, events = [], isDarkMode, onEventClick, onTimeSlotClick
         </div>
       </div>
 
-      {/* Week Grid - Mobile optimized */}
+      {/* Enhanced Week Grid with improved event display */}
       <div className="flex-1 overflow-y-auto">
-        <div className="relative">
-          {/* Hour rows */}
+        <div className="relative min-w-[700px] md:min-w-full">
+          {/* Hour rows with improved styling */}
           {hours.map(hour => (
             <div
               key={hour}
               className={`grid grid-cols-8 divide-x divide-gray-200 dark:divide-gray-700 border-b ${
                 isDarkMode ? 'border-gray-700' : 'border-gray-200'
-              } h-12 sm:h-16`}
+              } h-16`}
             >
-              {/* Time label - Mobile optimized */}
-              <div className={`p-1 sm:p-2 text-right pr-2 sm:pr-4 text-xs sm:text-sm font-medium ${
-                isDarkMode ? 'text-gray-400 bg-gray-800' : 'text-gray-500 bg-gray-50'
+              {/* Enhanced time label with gradient */}
+              <div className={`p-2 text-right pr-2 md:pr-4 text-xs md:text-sm font-medium ${
+                isDarkMode 
+                  ? 'text-gray-400 bg-gradient-to-r from-gray-800 to-gray-750' 
+                  : 'text-gray-500 bg-gradient-to-r from-gray-50 to-white'
               }`}>
                 {formatHour(hour)}
               </div>
               
-              {/* Day columns */}
+              {/* Enhanced day columns with better hover effects */}
               {weekDays.map((day, dayIndex) => {
                 const isToday = day.toDateString() === today.toDateString();
                 const isCurrentHour = isToday && new Date().getHours() === hour;
@@ -188,22 +203,26 @@ const WeekView = ({ date, events = [], isDarkMode, onEventClick, onTimeSlotClick
                 return (
                   <div
                     key={dayIndex}
-                    className={`relative hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors cursor-pointer ${
-                      isCurrentHour ? 'bg-blue-50 dark:bg-blue-900' : ''
-                    }`}
+                    className={`relative transition-colors cursor-pointer ${
+                      isCurrentHour 
+                        ? isDarkMode 
+                          ? 'bg-blue-900 bg-opacity-20' 
+                          : 'bg-blue-50'
+                        : ''
+                    } hover:bg-gray-50 dark:hover:bg-gray-800`}
                     onClick={() => {
                       const clickDate = new Date(day);
                       clickDate.setHours(hour, 0, 0, 0);
                       onTimeSlotClick && onTimeSlotClick(clickDate);
                     }}
                   >
-                    {/* Current time indicator - Mobile optimized */}
+                    {/* Enhanced current time indicator with animation */}
                     {isCurrentHour && (
                       <div 
-                        className="absolute left-0 right-0 bg-red-500 h-0.5 z-10"
+                        className="absolute left-0 right-0 bg-red-500 h-0.5 z-10 shadow-sm"
                         style={{ top: `${(new Date().getMinutes() / 60) * 100}%` }}
                       >
-                        <div className="absolute -left-0.5 sm:-left-1 -top-0.5 sm:-top-1 w-1 h-1 sm:w-2 sm:h-2 bg-red-500 rounded-full"></div>
+                        <div className="absolute -left-1 -top-1 w-2 h-2 bg-red-500 rounded-full animate-pulse"></div>
                       </div>
                     )}
                   </div>
@@ -212,13 +231,13 @@ const WeekView = ({ date, events = [], isDarkMode, onEventClick, onTimeSlotClick
             </div>
           ))}
 
-          {/* Events overlay - Mobile optimized */}
+          {/* Enhanced Events overlay with better animation and styling */}
           <div className="absolute inset-0">
-            <div className="grid grid-cols-8 h-full">
+            <div className="grid grid-cols-8 h-full min-w-[700px] md:min-w-full">
               {/* Skip time column */}
               <div></div>
               
-              {/* Day columns with events */}
+              {/* Day columns with enhanced event cards */}
               {weekDays.map((day, dayIndex) => {
                 const dayEvents = getEventsForDay(day);
                 
@@ -226,32 +245,42 @@ const WeekView = ({ date, events = [], isDarkMode, onEventClick, onTimeSlotClick
                   <div key={dayIndex} className="relative">
                     {dayEvents.map((event, eventIndex) => {
                       const position = getEventPosition(event);
+                      const isLeaveEvent = event.isWorkingDayLeave || event.category === 'holiday';
                       
                       return (
                         <motion.div
                           key={event.id || eventIndex}
-                          className={`absolute left-0.5 sm:left-1 right-0.5 sm:right-1 rounded-lg shadow-md cursor-pointer z-20 overflow-hidden ${
-                            event.hasConflict ? 'ring-1 sm:ring-2 ring-orange-400' : ''
+                          className={`absolute left-1 right-1 rounded-lg shadow-md cursor-pointer z-20 overflow-hidden ${
+                            isLeaveEvent
+                              ? 'border border-red-500 bg-stripe-pattern'
+                              : event.hasConflict 
+                                ? 'ring-2 ring-orange-400' 
+                                : ''
                           }`}
                           style={{
                             ...position,
-                            backgroundColor: event.isWorkingDayLeave || event.category === 'holiday' 
-                              ? '#EF4444' // Red color for leaves
+                            backgroundColor: isLeaveEvent
+                              ? '#F87171' // Red-400 for leaves
                               : isDarkMode ? `${event.color}90` : `${event.color}`,
                             color: 'white',
                             minHeight: '20px',
-                            backgroundImage: (event.isWorkingDayLeave || event.category === 'holiday') 
-                              ? "linear-gradient(135deg, rgba(239,68,68,1) 0%, rgba(220,38,38,1) 100%)" 
-                              : 'none'
+                            backgroundImage: isLeaveEvent
+                              ? "linear-gradient(135deg, rgba(248, 113, 113, 1) 0%, rgba(239, 68, 68, 1) 100%)" 
+                              : 'none',
+                            textShadow: isLeaveEvent ? '0 1px 4px rgba(0,0,0,0.7)' : 'none'
                           }}
                           onClick={() => onEventClick && onEventClick(event)}
-                          whileHover={{ scale: window.innerWidth < 640 ? 1.02 : 1.05, zIndex: 30 }}
-                          initial={{ opacity: 0, scale: 0.8 }}
-                          animate={{ opacity: 1, scale: 1 }}
-                          transition={{ delay: eventIndex * 0.05 }}
+                          whileHover={{ 
+                            scale: 1.03, 
+                            zIndex: 30,
+                            boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)"
+                          }}
+                          initial={{ opacity: 0, scale: 0.9, x: -5 }}
+                          animate={{ opacity: 1, scale: 1, x: 0 }}
+                          transition={{ delay: eventIndex * 0.05, duration: 0.2 }}
                         >
-                          {/* Add a subtle pattern for leave events */}
-                          {(event.isWorkingDayLeave || event.category === 'holiday') && (
+                          {/* Subtle pattern for leave events */}
+                          {isLeaveEvent && (
                             <div className="absolute inset-0 opacity-10">
                               <div className="w-full h-full" style={{
                                 backgroundImage: "url(\"data:image/svg+xml,%3Csvg width='20' height='20' viewBox='0 0 20 20' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23ffffff' fill-opacity='0.2' fill-rule='evenodd'%3E%3Ccircle cx='3' cy='3' r='3'/%3E%3Ccircle cx='13' cy='13' r='3'/%3E%3C/g%3E%3C/svg%3E\")"
@@ -259,59 +288,71 @@ const WeekView = ({ date, events = [], isDarkMode, onEventClick, onTimeSlotClick
                             </div>
                           )}
                           
-                          <div className="p-1 sm:p-2 h-full">
-                            <div className="font-semibold text-xs sm:text-sm mb-1 flex items-center gap-1">
-                              {/* Add pulsing effect for conflict indicator */}
-                              {event.hasConflict && (
-                                <span className="flex h-2 w-2 relative">
+                          {/* Enhanced event content with better spacing */}
+                          <div className="p-2 h-full flex flex-col">
+                            <div className="font-semibold text-xs truncate mb-0.5 flex items-center gap-1">
+                              {/* Enhanced conflict indicator */}
+                              {event.hasConflict && !isLeaveEvent && (
+                                <span className="flex h-1.5 w-1.5 relative">
                                   <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-orange-400 opacity-75"></span>
-                                  <span className="relative inline-flex rounded-full h-2 w-2 bg-orange-500"></span>
+                                  <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-orange-500"></span>
                                 </span>
                               )}
                               
-                              {/* Add icon for leave/holiday */}
-                              {(event.isWorkingDayLeave || event.category === 'holiday') && (
-                                <span className="text-xs inline-block mr-1">🏢</span>
+                              {/* Icon for leave/holiday */}
+                              {isLeaveEvent && (
+                                <span className="text-[10px] inline-block mr-0.5">🏢</span>
                               )}
                               
-                              <span className="break-words truncate">{event.title}</span>
+                              <span className="truncate">{event.title}</span>
                               
-                              {/* Add badge for leave type */}
-                              {(event.isWorkingDayLeave || event.category === 'holiday') && (
-                                <span className="ml-auto text-[8px] bg-white bg-opacity-30 px-1 py-0.5 rounded-sm">
+                              {/* Badge for leave type */}
+                              {isLeaveEvent && (
+                                <span className="ml-auto text-[8px] bg-white bg-opacity-30 px-1 py-0.5 rounded-sm text-gray-900 font-bold">
                                   {event.leaveType || 'HOLIDAY'}
                                 </span>
                               )}
                             </div>
                             
-                            <div className="text-xs opacity-90 flex items-center gap-1 mb-1 sm:block hidden">
-                              <FaRegClock className="text-[10px]" />
+                            {/* Time display - hide on very small heights */}
+                            <div className="text-[8px] opacity-90 flex items-center gap-0.5 mb-0.5 block">
+                              <FaRegClock className="text-[8px]" />
                               <span>
                                 {new Date(event.start).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
                               </span>
                             </div>
                             
+                            {/* Location with truncation */}
                             {event.location && (
-                              <div className="text-xs opacity-90 flex items-center gap-1 truncate sm:block hidden">
-                                <FaMapMarkerAlt className="text-[10px]" />
+                              <div className="text-[8px] opacity-90 flex items-center gap-0.5 truncate block">
+                                <FaMapMarkerAlt className="text-[8px]" />
                                 <span className="truncate">{event.location}</span>
                               </div>
                             )}
                             
-                            {/* Enhanced indicators for event properties */}
-                            <div className="flex items-center gap-1 mt-1 sm:block hidden">
+                            {/* Enhanced event indicators */}
+                            <div className="flex items-center gap-1 mt-auto block">
+                              {event.priority === 'high' && (
+                                <span className="w-1.5 h-1.5 bg-red-400 rounded-full" title="High Priority"></span>
+                              )}
+                              {event.priority === 'medium' && (
+                                <span className="w-1.5 h-1.5 bg-yellow-400 rounded-full" title="Medium Priority"></span>
+                              )}
+                              {event.priority === 'low' && (
+                                <span className="w-1.5 h-1.5 bg-green-400 rounded-full" title="Low Priority"></span>
+                              )}
                               {event.isRecurring && (
-                                <span className="inline-flex items-center rounded-full bg-white bg-opacity-20 px-1 text-[8px]">
-                                  ↻ Recurring
+                                <span className="inline-flex items-center rounded-full bg-white bg-opacity-20 px-1 text-[7px]">
+                                  ↻
                                 </span>
                               )}
                               {event.hasVideoCall && (
-                                <span className="inline-flex items-center rounded-full bg-white bg-opacity-20 px-1 text-[8px]">
-                                  ▶ Video
+                                <span className="inline-flex items-center rounded-full bg-white bg-opacity-20 px-1 text-[7px]">
+                                  ▶
                                 </span>
                               )}
                               {event.attendees && event.attendees.length > 0 && (
-                                <span className="inline-flex items-center rounded-full bg-white bg-opacity-20 px-1 text-[8px]">
+                                <span className="inline-flex items-center rounded-full bg-white bg-opacity-20 px-1 text-[7px]">
                                   👥 {event.attendees.length}
                                 </span>
                               )}

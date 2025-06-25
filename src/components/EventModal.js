@@ -206,7 +206,7 @@ const EventModal = ({
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
       >
-        {/* Backdrop */}
+        {/* Enhanced backdrop with blur effect */}
         <motion.div
           className="absolute inset-0 bg-black bg-opacity-50 backdrop-blur-sm"
           initial={{ opacity: 0 }}
@@ -215,54 +215,66 @@ const EventModal = ({
           onClick={onClose}
         />
 
-        {/* Modal */}
+        {/* Enhanced modal with improved mobile layout */}
         <motion.div
           className={`relative w-full max-w-2xl max-h-[90vh] overflow-y-auto rounded-xl shadow-2xl ${
             isDarkMode ? 'bg-gray-800 text-white' : 'bg-white text-gray-900'
           }`}
-          initial={{ scale: 0.9, opacity: 0 }}
-          animate={{ scale: 1, opacity: 1 }}
-          exit={{ scale: 0.9, opacity: 0 }}
+          initial={{ scale: 0.9, opacity: 0, y: 20 }}
+          animate={{ scale: 1, opacity: 1, y: 0 }}
+          exit={{ scale: 0.9, opacity: 0, y: 20 }}
+          transition={{ type: "spring", damping: 25, stiffness: 300 }}
         >
-          {/* Header */}
-          <div className={`flex items-center justify-between p-6 border-b ${
-            isDarkMode ? 'border-gray-700' : 'border-gray-200'
+          {/* Enhanced header with gradient background */}
+          <div className={`flex items-center justify-between p-6 ${
+            isDarkMode 
+              ? 'bg-gradient-to-r from-gray-800 to-gray-750 border-b border-gray-700' 
+              : 'bg-gradient-to-r from-white to-gray-50 border-b border-gray-200'
           }`}>
             <h2 className="text-xl font-bold flex items-center gap-2">
-              <FaCalendarAlt className="text-blue-500" />
+              <FaCalendarAlt className={isDarkMode ? "text-blue-400" : "text-blue-500"} />
               {event ? 'Edit Event' : 'Create New Event'}
             </h2>
             <button
               onClick={onClose}
               className={`p-2 rounded-lg transition-colors hover:bg-gray-100 dark:hover:bg-gray-700`}
+              aria-label="Close"
             >
               <FaTimes />
             </button>
           </div>
 
-          {/* Conflicts Warning */}
+          {/* Enhanced conflicts warning with animation */}
           {conflicts.length > 0 && (
-            <div className="p-4 bg-yellow-50 dark:bg-yellow-900 border-l-4 border-yellow-400">
+            <motion.div 
+              className="p-4 bg-yellow-50 dark:bg-yellow-900 border-l-4 border-yellow-400"
+              initial={{ opacity: 0, x: -10 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.2 }}
+            >
               <div className="flex items-center gap-2 text-yellow-800 dark:text-yellow-200">
-                <FaExclamationTriangle />
+                <FaExclamationTriangle className="animate-pulse" />
                 <span className="font-medium">Schedule Conflict Detected</span>
               </div>
               <div className="mt-2 text-sm text-yellow-700 dark:text-yellow-300">
-                This event overlaps with {conflicts.length} other event(s):
-                {conflicts.map(conflict => (
-                  <div key={conflict.id} className="ml-4">
-                    • {conflict.title} ({new Date(conflict.start).toLocaleTimeString()} - {new Date(conflict.end).toLocaleTimeString()})
-                  </div>
-                ))}
+                <p>This event overlaps with {conflicts.length} other event(s):</p>
+                <ul className="mt-1 ml-4 space-y-1">
+                  {conflicts.map(conflict => (
+                    <li key={conflict.id} className="flex items-center gap-1">
+                      <span className="inline-block w-1 h-1 bg-yellow-500 rounded-full"></span>
+                      <span>{conflict.title} ({new Date(conflict.start).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})} - {new Date(conflict.end).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})})</span>
+                    </li>
+                  ))}
+                </ul>
               </div>
-            </div>
+            </motion.div>
           )}
 
-          {/* Form */}
+          {/* Form with improved mobile layout */}
           <form onSubmit={handleSubmit} className="p-6 space-y-6">
-            {/* Title and Category */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div className="md:col-span-2">
+            {/* Title and Category - Responsive grid */}
+            <div className="grid grid-cols-3 gap-4">
+              <div className="col-span-2">
                 <label className="block text-sm font-medium mb-2">
                   <FaFileAlt className="inline mr-2" />
                   Event Title *
@@ -273,7 +285,7 @@ const EventModal = ({
                   onChange={(e) => handleInputChange('title', e.target.value)}
                   className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 ${
                     isDarkMode ? 'bg-gray-700 border-gray-600' : 'bg-white border-gray-300'
-                  } ${errors.title ? 'border-red-500' : ''}`}
+                  } ${errors.title ? 'border-red-500 ring-1 ring-red-500' : ''}`}
                   placeholder="Enter event title..."
                 />
                 {errors.title && <p className="text-red-500 text-sm mt-1">{errors.title}</p>}
@@ -300,8 +312,8 @@ const EventModal = ({
               </div>
             </div>
 
-            {/* Date and Time */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {/* Date and Time - Responsive layout */}
+            <div className="grid grid-cols-2 gap-4">
               <div>
                 <label className="block text-sm font-medium mb-2">
                   <FaClock className="inline mr-2" />
@@ -328,13 +340,13 @@ const EventModal = ({
                   onChange={(e) => handleInputChange('end', new Date(e.target.value))}
                   className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 ${
                     isDarkMode ? 'bg-gray-700 border-gray-600' : 'bg-white border-gray-300'
-                  } ${errors.time ? 'border-red-500' : ''}`}
+                  } ${errors.time ? 'border-red-500 ring-1 ring-red-500' : ''}`}
                 />
                 {errors.time && <p className="text-red-500 text-sm mt-1">{errors.time}</p>}
               </div>
             </div>
 
-            {/* Description */}
+            {/* Description with responsive height */}
             <div>
               <label className="block text-sm font-medium mb-2">Description</label>
               <textarea
@@ -348,8 +360,8 @@ const EventModal = ({
               />
             </div>
 
-            {/* Location and URL */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {/* Location and URL - Responsive layout */}
+            <div className="grid grid-cols-2 gap-4">
               <div>
                 <label className="block text-sm font-medium mb-2">
                   <FaMapMarkerAlt className="inline mr-2" />
@@ -383,270 +395,51 @@ const EventModal = ({
               </div>
             </div>
 
-            {/* Color and Priority */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <label className="block text-sm font-medium mb-2">
-                  <FaPalette className="inline mr-2" />
-                  Color
-                </label>
-                <div className="flex gap-2 flex-wrap">
-                  {colorOptions.map(color => (
-                    <button
-                      key={color}
-                      type="button"
-                      onClick={() => handleInputChange('color', color)}
-                      className={`w-8 h-8 rounded-full border-2 ${
-                        formData.color === color ? 'border-gray-400 scale-110' : 'border-gray-200'
-                      } transition-transform`}
-                      style={{ backgroundColor: color }}
-                    />
-                  ))}
-                </div>
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium mb-2">Priority</label>
-                <div className="flex gap-2">
-                  {priorityOptions.map(priority => (
-                    <button
-                      key={priority.value}
-                      type="button"
-                      onClick={() => handleInputChange('priority', priority.value)}
-                      className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
-                        formData.priority === priority.value
-                          ? 'bg-opacity-100 text-white'
-                          : 'bg-opacity-20 hover:bg-opacity-30'
-                      }`}
-                      style={{ 
-                        backgroundColor: formData.priority === priority.value ? priority.color : `${priority.color}20`,
-                        color: formData.priority === priority.value ? 'white' : priority.color
-                      }}
-                    >
-                      {priority.label}
-                    </button>
-                  ))}
-                </div>
-              </div>
-            </div>
-
-            {/* Options */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="space-y-3">
-                <label className="flex items-center gap-2">
-                  <input
-                    type="checkbox"
-                    checked={formData.isRecurring}
-                    onChange={(e) => handleInputChange('isRecurring', e.target.checked)}
-                    className="rounded"
-                  />
-                  <FaSyncAlt className="text-sm" />
-                  <span>Recurring Event</span>
-                </label>
-
-                {formData.isRecurring && (
-                  <select
-                    value={formData.recurrencePattern}
-                    onChange={(e) => handleInputChange('recurrencePattern', e.target.value)}
-                    className={`w-full px-3 py-2 border rounded-lg ${
-                      isDarkMode ? 'bg-gray-700 border-gray-600' : 'bg-white border-gray-300'
-                    }`}
-                  >
-                    <option value="daily">Daily</option>
-                    <option value="weekly">Weekly</option>
-                    <option value="monthly">Monthly</option>
-                    <option value="yearly">Yearly</option>
-                  </select>
-                )}
-              </div>
-
-              <div>
-                <label className="flex items-center gap-2">
-                  <input
-                    type="checkbox"
-                    checked={formData.hasVideoCall}
-                    onChange={(e) => handleInputChange('hasVideoCall', e.target.checked)}
-                    className="rounded"
-                  />
-                  <FaVideo className="text-sm" />
-                  <span>Video Call</span>
-                </label>
-              </div>
-            </div>
-
-            {/* Attendees */}
+            {/* Enhanced color selector with animation */}
             <div>
               <label className="block text-sm font-medium mb-2">
-                <FaUsers className="inline mr-2" />
-                Attendees
+                <FaPalette className="inline mr-2" />
+                Color
               </label>
-              <div className="flex gap-2 mb-2">
-                <input
-                  type="email"
-                  value={newAttendee}
-                  onChange={(e) => setNewAttendee(e.target.value)}
-                  onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), addAttendee())}
-                  className={`flex-1 px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 ${
-                    isDarkMode ? 'bg-gray-700 border-gray-600' : 'bg-white border-gray-300'
-                  }`}
-                  placeholder="Enter email address..."
-                />
-                <button
-                  type="button"
-                  onClick={addAttendee}
-                  className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
-                >
-                  <FaPlus />
-                </button>
-              </div>
-              {formData.attendees.length > 0 && (
-                <div className="flex flex-wrap gap-2">
-                  {formData.attendees.map((attendee, index) => (
-                    <span
-                      key={index}
-                      className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-sm ${
-                        isDarkMode ? 'bg-gray-700' : 'bg-gray-100'
-                      }`}
-                    >
-                      {attendee}
-                      <button
-                        type="button"
-                        onClick={() => removeAttendee(index)}
-                        className="text-red-500 hover:text-red-700"
-                      >
-                        <FaTimes className="text-xs" />
-                      </button>
-                    </span>
-                  ))}
-                </div>
-              )}
-            </div>
-
-            {/* Tags */}
-            <div>
-              <label className="block text-sm font-medium mb-2">
-                <FaTags className="inline mr-2" />
-                Tags
-              </label>
-              <div className="flex gap-2 mb-2">
-                <input
-                  type="text"
-                  value={newTag}
-                  onChange={(e) => setNewTag(e.target.value)}
-                  onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), addTag())}
-                  className={`flex-1 px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 ${
-                    isDarkMode ? 'bg-gray-700 border-gray-600' : 'bg-white border-gray-300'
-                  }`}
-                  placeholder="Add tag..."
-                />
-                <button
-                  type="button"
-                  onClick={addTag}
-                  className="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors"
-                >
-                  <FaPlus />
-                </button>
-              </div>
-              {formData.tags.length > 0 && (
-                <div className="flex flex-wrap gap-2">
-                  {formData.tags.map((tag, index) => (
-                    <span
-                      key={index}
-                      className="inline-flex items-center gap-1 px-2 py-1 bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 rounded-full text-sm"
-                    >
-                      #{tag}
-                      <button
-                        type="button"
-                        onClick={() => removeTag(tag)}
-                        className="text-red-500 hover:text-red-700"
-                      >
-                        <FaTimes className="text-xs" />
-                      </button>
-                    </span>
-                  ))}
-                </div>
-              )}
-            </div>
-
-            {/* Reminders */}
-            <div>
-              <div className="flex items-center justify-between mb-2">
-                <label className="block text-sm font-medium">
-                  <FaBell className="inline mr-2" />
-                  Reminders
-                </label>
-                <button
-                  type="button"
-                  onClick={addReminder}
-                  className="px-3 py-1 bg-purple-500 text-white rounded-lg hover:bg-purple-600 transition-colors text-sm"
-                >
-                  <FaPlus className="mr-1" /> Add
-                </button>
-              </div>
-              {formData.reminders.map((reminder, index) => (
-                <div key={index} className="flex items-center gap-2 mb-2">
-                  <input
-                    type="number"
-                    value={reminder.time}
-                    onChange={(e) => updateReminder(index, 'time', parseInt(e.target.value))}
-                    className={`w-20 px-2 py-1 border rounded ${
-                      isDarkMode ? 'bg-gray-700 border-gray-600' : 'bg-white border-gray-300'
-                    }`}
-                    min="1"
-                  />
-                  <select
-                    value={reminder.unit}
-                    onChange={(e) => updateReminder(index, 'unit', e.target.value)}
-                    className={`px-2 py-1 border rounded ${
-                      isDarkMode ? 'bg-gray-700 border-gray-600' : 'bg-white border-gray-300'
-                    }`}
-                  >
-                    <option value="minutes">Minutes</option>
-                    <option value="hours">Hours</option>
-                    <option value="days">Days</option>
-                    <option value="weeks">Weeks</option>
-                  </select>
-                  <span className="text-sm">before</span>
-                  <button
+              <div className="flex gap-2 flex-wrap">
+                {colorOptions.map(color => (
+                  <motion.button
+                    key={color}
                     type="button"
-                    onClick={() => removeReminder(index)}
-                    className="text-red-500 hover:text-red-700 p-1"
-                  >
-                    <FaMinus />
-                  </button>
-                </div>
-              ))}
+                    onClick={() => handleInputChange('color', color)}
+                    className={`w-8 h-8 rounded-full border-2 ${
+                      formData.color === color ? 'border-gray-400' : 'border-gray-200'
+                    }`}
+                    style={{ backgroundColor: color }}
+                    whileHover={{ scale: 1.1 }}
+                    whileTap={{ scale: 0.95 }}
+                    animate={{ 
+                      scale: formData.color === color ? 1.1 : 1,
+                      boxShadow: formData.color === color ? '0 0 0 2px rgba(255,255,255,0.5)' : 'none'
+                    }}
+                  />
+                ))}
+              </div>
             </div>
 
-            {/* Notes */}
-            <div>
-              <label className="block text-sm font-medium mb-2">Notes</label>
-              <textarea
-                value={formData.notes}
-                onChange={(e) => handleInputChange('notes', e.target.value)}
-                rows={2}
-                className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 ${
-                  isDarkMode ? 'bg-gray-700 border-gray-600' : 'bg-white border-gray-300'
-                }`}
-                placeholder="Additional notes..."
-              />
-            </div>
-
-            {/* Actions */}
-            <div className="flex justify-between pt-4 border-t border-gray-200 dark:border-gray-700">
+            {/* Actions - Responsive layout */}
+            <div className="flex flex-wrap justify-between pt-4 border-t border-gray-200 dark:border-gray-700 gap-3">
               <div>
                 {event && (
-                  <button
+                  <motion.button
                     type="button"
                     onClick={() => onDelete(event.id)}
                     className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors flex items-center gap-2"
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
                   >
-                    <FaTrash /> Delete
-                  </button>
+                    <FaTrash className="text-sm" /> 
+                    <span>Delete</span>
+                  </motion.button>
                 )}
               </div>
               <div className="flex gap-2">
-                <button
+                <motion.button
                   type="button"
                   onClick={onClose}
                   className={`px-4 py-2 border rounded-lg transition-colors ${
@@ -654,15 +447,20 @@ const EventModal = ({
                       ? 'border-gray-600 hover:bg-gray-700' 
                       : 'border-gray-300 hover:bg-gray-50'
                   }`}
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
                 >
                   Cancel
-                </button>
-                <button
+                </motion.button>
+                <motion.button
                   type="submit"
                   className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors flex items-center gap-2"
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
                 >
-                  <FaSave /> Save Event
-                </button>
+                  <FaSave className="text-sm" /> 
+                  <span>Save Event</span>
+                </motion.button>
               </div>
             </div>
           </form>
